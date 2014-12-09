@@ -1,0 +1,30 @@
+---
+title: 'Lesson 5: Introduction to the vector handling in R'
+author: "Jan Verbesselt and Loïc Dutrieux"
+output:
+  html_document:
+    theme: united
+    toc: yes
+    toc_depth: 4
+    number_sections: true
+  pdf_document:
+    toc: yes
+---
+
+# Today's items
+
+## ToDo in the morning
+
+## Objective of today:
+
+## Learning outcomes of today:
+
+# Vector handling tutorial
+
+See the following websites and work through the examples.
+
+# Excercise of today
+
+## basic
+
+## optional more advanced
