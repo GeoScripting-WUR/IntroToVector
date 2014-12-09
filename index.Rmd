@@ -15,22 +15,32 @@ output:
 
 ## ToDo in the morning
 
-## Objective of today:
+Self study on how to read in vector files
+
+## Objective of today
+
+Learn how to handle vector data (e.g. ESRI shape files)
 
 ## Learning outcomes of today:
 
-# Vector handling tutorial
+- Find libraries which offer vector data handling functions
+- Read, write, and visualize vector data using a script
 
-See the following websites and work through the examples.
+# Self study on how to handle vector files
+
+See the following websites and work through the examples:
+
+- https://www.nceas.ucsb.edu/scicomp/usecases/ReadWriteESRIShapeFiles
+
+- https://www.nceas.ucsb.edu/scicomp/recipes/projections
+
+# Vector R basics
 
 # Excercise of today
 
-## basic
+## Required challenge
+## Optional for bonus points
 
-## optional more advanced
+# More info
 
-## More info
 
-WWW's:
-
-- https://www.nceas.ucsb.edu/scicomp/usecases/ReadWriteESRIShapeFiles
