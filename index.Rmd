@@ -28,3 +28,9 @@ See the following websites and work through the examples.
 ## basic
 
 ## optional more advanced
+
+## More info
+
+WWW's:
+
+- https://www.nceas.ucsb.edu/scicomp/usecases/ReadWriteESRIShapeFiles
