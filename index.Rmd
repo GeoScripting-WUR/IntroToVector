@@ -117,7 +117,7 @@ spplot(mypointsdf, zcol="Name", col.regions = c("red", "blue"),
 ```{r, eval=FALSE}
 ## play with the spplot function
 ## What is needed to make the following work?
-spplot(mypointsdf, col.regions = c(1,2), zcol="id?")
+spplot(mypointsdf, col.regions = c(1,2), zcol="id")
 ```
 
 *Notice the difference between the objects mypoints and mypointsdf.*
@@ -181,7 +181,7 @@ Digitize a path (e.g. a bicycle route) between the two points of interest you se
 dsn = file.path("data","route.kml")
 ogrListLayers(dsn) ## to find out what the layers are
 myroute <- readOGR(dsn = file.path("data","route.kml"), 
-                   layer = "fillinyourlayername")
+                   layer = "route")
 ```
 
 ```{r, eval=TRUE, echo=FALSE}
@@ -239,10 +239,10 @@ mylinesdf$length <- gLength(mylinesRD, byid=T)
 Feel free to export the updated lines to Google Earth or to inspect the contents of the $data$ slot of the object $mylinesdf$ (i.e. type $mylinesdf@data$).
 
 
-### Polygons
-We now continue with $sp} classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around the points you defined earlier.
+### Polygons - Is there an alternative to look at polygons - and illustrate it's potential?
+We now continue with $sp$ classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around the points you defined earlier.
 
-```{r}
+```{r, eval=FALSE}
 # make circles around points, with radius equal to distance between points 
 mypointsRD <- spTransform(mypointsdf, prj_string_RD)
 pnt1_rd <- coordinates(mypointsRD)[1,]
@@ -277,12 +277,10 @@ print(paste("The difference in area =", round(100 * gArea(mydiff) /
 
 Here is an example of a plot of the results which employs a few more advanced options of $spplot$.
 
-```{r basicGeometry, include=TRUE}
+```{r basicGeometry, eval=FALSE}
 spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"), 
        sp.layout=list(list("sp.points", mypointsRD, col="red", pch=19, cex=1.5), 
                       list("sp.lines", mylinesRD, lwd=1.5)))
-
-# fig.cap="Basic points, lines and polygons plotted with $spplot$"
 ```
 
 
