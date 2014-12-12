@@ -60,7 +60,7 @@ First, start Google Earth on your computer and make a note of the longitude and 
 The example below shows how you can create spatial point objects from these coordinates. Type $?<function name>$ (e.g. $?cbind$) for finding help on the functions used.
 
 *Question* See ?CRS and have a look at the help.
-```{r}
+```{r, message=FALSE}
 # load sp package
 library(sp)
 library(rgdal)
@@ -367,12 +367,6 @@ Questions:
 ## Optional for bonus points
 
 - What needs to be done to derive a buffer around the rivers of 200m?
-
-
-
-# Self study on how to handle vector files
-
-
 
 # More info
 

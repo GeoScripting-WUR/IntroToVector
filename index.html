@@ -76,8 +76,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#excercise-of-today"><span class="toc-section-number">3</span> Excercise of today</a><ul>
 <li><a href="#optional-for-bonus-points"><span class="toc-section-number">3.1</span> Optional for bonus points</a></li>
 </ul></li>
-<li><a href="#self-study-on-how-to-handle-vector-files"><span class="toc-section-number">4</span> Self study on how to handle vector files</a></li>
-<li><a href="#more-info"><span class="toc-section-number">5</span> More info</a></li>
+<li><a href="#more-info"><span class="toc-section-number">4</span> More info</a></li>
 </ul>
 </div>
 
@@ -125,14 +124,9 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p><em>Question</em> See ?CRS and have a look at the help.</p>
 <pre class="r"><code># load sp package
 library(sp)
-library(rgdal)</code></pre>
-<pre><code>## rgdal: version: 0.8-16, (SVN revision 498)
-## Geospatial Data Abstraction Library extensions to R successfully loaded
-## Loaded GDAL runtime: GDAL 1.11.1, released 2014/09/24
-## Path to GDAL shared files: /Library/Frameworks/GDAL.framework/Versions/1.11/Resources/gdal
-## Loaded PROJ.4 runtime: Rel. 4.8.0, 6 March 2012, [PJ_VERSION: 480]
-## Path to PROJ.4 shared files: (autodetected)</code></pre>
-<pre class="r"><code># coordinates of two points identiefied in Google Earth, for example
+library(rgdal)
+
+# coordinates of two points identiefied in Google Earth, for example
 pnt1_xy &lt;- cbind(5.6660, 51.9872)   # enter your own coordinates
 pnt2_xy &lt;- cbind(5.6643, 51.9668)   # enter your own coordinates
 
@@ -348,11 +342,8 @@ ogrInfo(dsn, &quot;nw-counties&quot;)</code></pre>
 </ul>
 </div>
 </div>
-<div id="self-study-on-how-to-handle-vector-files" class="section level1">
-<h1><span class="header-section-number">4</span> Self study on how to handle vector files</h1>
-</div>
 <div id="more-info" class="section level1">
-<h1><span class="header-section-number">5</span> More info</h1>
+<h1><span class="header-section-number">4</span> More info</h1>
 <p>About projections and code: <a href="https://www.nceas.ucsb.edu/scicomp/recipes/projections" class="uri">https://www.nceas.ucsb.edu/scicomp/recipes/projections</a></p>
 </div>
 
