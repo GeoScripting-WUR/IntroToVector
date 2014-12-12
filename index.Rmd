@@ -104,10 +104,13 @@ mypointsdf <- SpatialPointsDataFrame(
   proj4string=prj_string_WGS)
 ```
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 class(mypointsdf) # inspect and plot object
 names(mypointsdf)
 str(mypointsdf)
+```
+
+```{r, eval=TRUE}
 spplot(mypointsdf, zcol="Name", col.regions = c("red", "blue"), 
        xlim = bbox(mypointsdf)[1, ]+c(-0.01,0.01), 
        ylim = bbox(mypointsdf)[2, ]+c(-0.01,0.01),
@@ -142,15 +145,18 @@ mylinesdf <- SpatialLinesDataFrame(spatlines, line_data)
 ```{r, eval=FALSE}
 class(mylinesdf)
 str(mylinesdf)
+```
+
+```{r, fig.height=6, fig.width=12}
 spplot(mylinesdf, col.regions = "blue", 
        xlim = bbox(mypointsdf)[1, ]+c(-0.01,0.01), 
        ylim = bbox(mypointsdf)[2, ]+c(-0.01,0.01),
        scales= list(draw = TRUE))
 ```
-@
 
 *Try to understand the above code and its results by studying help.*
 *Try to add the points together with the lines on the same map*
+
 
 ### Writing and reading spatial vector data using OGR
 
@@ -173,7 +179,9 @@ if (!file.exists("data")) {
 
 Check (in Google Earth) whether the attribute data were written to the kml output.
 
-The function $readOGR$ allows reading OGR compatible data into a suitable Spatial vector object. Similar to $writeOGR$, the function requires entries for the arguments $dsn$ (data source name) and $layer$ (layer name). The interpretation of these enties vary by driver. Please study details in the help file.
+The function $readOGR$ allows reading OGR compatible data into a suitable Spatial vector object. 
+
+Similar to $writeOGR$, the function requires entries for the arguments $dsn$ (data source name) and $layer$ (layer name). The interpretation of these enties vary by driver. Please study details in the help file.
 
 Digitize a path (e.g. a bicycle route) between the two points of interest you selected earlier in Google Earth. This can be achieved using the $Add Path$ functionality of Google Earth. Save the path in the data folder within the working directory under the name $route.kml$. We will read this file into a spatial lines object and add it to the already existing $SpatialLinesDataFrame$ object.
 
@@ -198,7 +206,6 @@ if (!file.exists(file.path("data","route.rda"))) {
 myroute@proj4string <- prj_string_WGS
 names(myroute)
 myroute$Description <- NULL # delete Description
-mylinesdf$length <- NULL # remove length from my lines if it is there (see lower)
 mylinesdf <- rbind(mylinesdf, myroute)
 ```
 
@@ -211,11 +218,11 @@ The **Keyhole Markup Language (kml)** used by Google Earth uses latitude and lon
 
 Please note that: 
 
-- some widely spread definitions of the Dutch grid (**EPSG: 28992**) are incomplete;
-- the transformation used below is approximate since it does not account for time dependent differences between WGGS84 and ETRS89 and it does not apply a correction grid for modelling errors in the original measurements of RD. Details can be found at (test)[http://nl.wikipedia.org/wiki/Rijksdriehoekscoordinaten].
-
-*check this - Sytze*
-More information can be found about projections on http://www.spatialreference.org
+- some widely spread definitions of the Dutch grid (**EPSG: 28992**) are incomplete 
+(see e.g. http://www.spatialreference.org are search for the EPSG number);
+- the transformation used below is approximate. 
+Details can be found at http://nl.wikipedia.org/wiki/Rijksdriehoekscoordinaten.
+- The PROJ.4 details can be found here: http://www.spatialreference.org/ref/epsg/28992/proj4/
 
 ```{r}
 # define CRS object for RD projection
@@ -236,13 +243,17 @@ library(rgeos)
 mylinesdf$length <- gLength(mylinesRD, byid=T)
 ```
 
-Feel free to export the updated lines to Google Earth or to inspect the contents of the $data$ slot of the object $mylinesdf$ (i.e. type $mylinesdf@data$).
-
-
-### Polygons - Is there an alternative to look at polygons - and illustrate it's potential?
-We now continue with $sp$ classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around the points you defined earlier.
+Feel free to export the updated lines to Google Earth or to inspect the contents of the $data$ slot of the object $mylinesdf$ 
 
 ```{r, eval=FALSE}
+mylinesdf@data
+```
+
+
+### Polygons
+We now continue with $sp$ classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around the points you defined earlier.
+
+```{r}
 # make circles around points, with radius equal to distance between points 
 mypointsRD <- spTransform(mypointsdf, prj_string_RD)
 pnt1_rd <- coordinates(mypointsRD)[1,]
@@ -266,6 +277,7 @@ circlesdf <- SpatialPolygonsDataFrame(spcircles, circledat)
 Similar results can be obtained using the function gBuffer of the package rgeos, as demonstrated below. Notice the use of two overlay functions from the package $rgeos$.
 
 ```{r buffering, eval = FALSE}
+library(rgeos)
 buffpoint <- gBuffer(mypointsRD[1,], width=mylinesdf$length[1], quadsegs=25)
 mydiff <- gDifference(circlesdf[1,], buffpoint)
 gArea(mydiff)
@@ -281,6 +293,8 @@ Here is an example of a plot of the results which employs a few more advanced op
 spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"), 
        sp.layout=list(list("sp.points", mypointsRD, col="red", pch=19, cex=1.5), 
                       list("sp.lines", mylinesRD, lwd=1.5)))
+
+# fig.cap="Basic points, lines and polygons plotted with $spplot$"
 ```
 
 
