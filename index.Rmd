@@ -1,6 +1,6 @@
 ---
 title: 'Lesson 5: Introduction to the vector handling in R'
-author: "Jan Verbesselt and Loïc Dutrieux"
+author: "Jan Verbesselt and Sytze de Bruyn"
 output:
   html_document:
     theme: united
@@ -23,21 +23,271 @@ Learn how to handle vector data (e.g. ESRI shape files)
 
 ## Learning outcomes of today:
 
-- Find libraries which offer vector data handling functions
-- Read, write, and visualize vector data using a script
+In today's lecture, we will explore the basics of handling spatial vector data in R. There are several R packages for this purpose but we will focus on using $sp$, $rgdal$, $rgeos and some related packages. At the end of the lecture, you should be able to:
+
+  - create point, line and polygon objects from scratch;
+  - explore the structure of $sp$ classes for spatial vector data;
+  - plot spatial vector data;
+  - transform between datums and map projections; 
+  - apply basic operations on vector data, such as buffering, intersection and area calculation;
+  - ?use a Date-Time class;
+  - write spatial vector data to a kml file;
+  - ?convert spatial data read from a plain text file into a spatial class for vector data.
 
 # Self study on how to handle vector files
 
 See the following websites and work through the examples:
 
 - https://www.nceas.ucsb.edu/scicomp/usecases/ReadWriteESRIShapeFiles
-
 - https://www.nceas.ucsb.edu/scicomp/recipes/projections
 
 # Vector R basics
 
-# Excercise of today
+## Some packages for working with spatial vector data in R
 
+The packages $sp$ and $rgdal$ are widely used throughout this course. 
+Both packages not only provide functionallity for raster data but also for vector data. 
+For example, rgdal includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as ESRI Shapefiles and kml. Similarly, $rgeos$ is an interface to the powerful **Geometry Engine Open Source (GEOS)** library for all kind of operations on geometries (buffering, overlaying, area calculations, etc.).  
+
+Thus, functionality that you commonly find in expensive GIS software is also available within R, using free but very powerful software libaries. 
+
+The possiblities are huge; in this course we can only scratch the surface with some essentials which hopefully invite you to experiment further and use them in your research. Details can be found in the book Applied Spatial Data Analysis with R and several vignettes authored by Roger Bivand, Edzer Pebesma and Virgilio Gomez-Rubio. Owing to time constraints, this lecture cannot cover the related package $spacetime$ with classes and methods for spatio-temporal data.
+
+*Bivand:2013ux*
+
+## Creating and manipulating geometries
+
+The package $sp$ provides classes for spatial-only geometries, such as $SpatialPoints$ (for points), and combinations of geometries and attribute data, such as a $SpatialPointsDataFrame$. The following data classes are available for spatial vector data *Edzer:2005ux*:
+
+*Add table here with an overview*
+
+We will go through a few examples of creating geometries from scratch to familiarize yourself with these classes.
+
+First, start Google Earth on your computer and make a note of the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point. To change the settings in Google Earth click *Tools | Options* and change the Show lat/Long setting on the 3D View Tab. 
+
+### Points: SpatialPoints, SpatialPointsDataFrame
+The example below shows how you can create spatial point objects from these coordinates. Type $?<function name>$ (e.g. $?cbind$) for finding help on the functions used.
+
+*Question* See ?CRS and have a look at the help.
+```{r}
+# load sp package
+library(sp)
+library(rgdal)
+
+# coordinates of two points identiefied in Google Earth, for example
+pnt1_xy <- cbind(5.6660, 51.9872)   # enter your own coordinates
+pnt2_xy <- cbind(5.6643, 51.9668)   # enter your own coordinates
+
+# combine coordinates in single matrix
+coords <- rbind(pnt1_xy, pnt2_xy)
+
+# make spatial points object
+prj_string_WGS <- CRS("+proj=longlat +datum=WGS84")
+mypoints <- SpatialPoints(coords, proj4string=prj_string_WGS)
+```
+
+```{r eval=FALSE}
+# inspect object
+class(mypoints)
+str(mypoints)
+```
+
+```{r, eval=TRUE}
+# create and display some attribute data and store in a data frame
+mydata <- data.frame(cbind(id = c(1,2), 
+                Name = c("my first point", 
+                         "my second point")))
+
+# make spatial points data frame
+mypointsdf <- SpatialPointsDataFrame(
+  coords, data = mydata, 
+  proj4string=prj_string_WGS)
+```
+
+```{r, eval=TRUE}
+class(mypointsdf) # inspect and plot object
+names(mypointsdf)
+str(mypointsdf)
+spplot(mypointsdf, zcol="Name", col.regions = c("red", "blue"), 
+       xlim = bbox(mypointsdf)[1, ]+c(-0.01,0.01), 
+       ylim = bbox(mypointsdf)[2, ]+c(-0.01,0.01),
+       scales= list(draw = TRUE))
+```
+
+```{r, eval=FALSE}
+## play with the spplot function
+## What is needed to make the following work?
+spplot(mypointsdf, col.regions = c(1,2), zcol="id?")
+```
+
+*Notice the difference between the objects mypoints and mypointsdf.*
+
+### Lines
+
+Now let us connect the two points by a straight line. First find information on 
+the classes for lines that are available in $sp$. The goal is to create 
+SpatialLinesDataFrame but we have to go through some other classes.
+
+```{r}
+# consult help on SpatialLines class
+simple_line <- Line(coords)
+lines_obj <- Lines(list(simple_line), "1")
+spatlines <- SpatialLines(list(lines_obj), proj4string=prj_string_WGS)
+line_data <- data.frame(Name = "straight line", row.names="1")
+mylinesdf <- SpatialLinesDataFrame(spatlines, line_data)
+```
+
+*Q: What is the difference between Line and Lines?*
+
+```{r, eval=FALSE}
+class(mylinesdf)
+str(mylinesdf)
+spplot(mylinesdf, col.regions = "blue", 
+       xlim = bbox(mypointsdf)[1, ]+c(-0.01,0.01), 
+       ylim = bbox(mypointsdf)[2, ]+c(-0.01,0.01),
+       scales= list(draw = TRUE))
+```
+@
+
+*Try to understand the above code and its results by studying help.*
+*Try to add the points together with the lines on the same map*
+
+### Writing and reading spatial vector data using OGR
+
+What now follows is a brief intermezzo before we continu with the classess for polygons. 
+Let us first export the objects created thus far to kml files that can be displayed in Google Earth. 
+We will use OGR functionality for that purpose, which is available through the package $rgdal$.
+
+```{r, eval=FALSE, echo=TRUE}
+library(rgdal)
+# write to kml ; below we assume a subdirectory data within the current 
+# working directory.
+if (!file.exists("data")) { 
+  dir.create("data") 
+  writeOGR(mypointsdf, file.path("data","mypointsGE.kml"), 
+           "mypointsGE", driver="KML", overwrite_layer=TRUE)
+  writeOGR(mylinesdf, file.path("data","mylinesGE.kml"), 
+           "mylinesGE", driver="KML", overwrite_layer=TRUE)
+ }
+```
+
+Check (in Google Earth) whether the attribute data were written to the kml output.
+
+The function $readOGR$ allows reading OGR compatible data into a suitable Spatial vector object. Similar to $writeOGR$, the function requires entries for the arguments $dsn$ (data source name) and $layer$ (layer name). The interpretation of these enties vary by driver. Please study details in the help file.
+
+Digitize a path (e.g. a bicycle route) between the two points of interest you selected earlier in Google Earth. This can be achieved using the $Add Path$ functionality of Google Earth. Save the path in the data folder within the working directory under the name $route.kml$. We will read this file into a spatial lines object and add it to the already existing $SpatialLinesDataFrame$ object.
+
+```{r, eval=FALSE}
+dsn = file.path("data","route.kml")
+ogrListLayers(dsn) ## to find out what the layers are
+myroute <- readOGR(dsn = file.path("data","route.kml"), 
+                   layer = "fillinyourlayername")
+```
+
+```{r, eval=TRUE, echo=FALSE}
+if (!file.exists(file.path("data","route.rda"))) {
+  myroute <- readOGR(file.path("data","route.kml"), "route")
+  save(myroute, file = file.path("data","route.rda"), compress="xz")
+} else {
+  load(file.path("data","route.rda"))
+}
+```
+
+```{r}
+# put both in single data frame
+myroute@proj4string <- prj_string_WGS
+names(myroute)
+myroute$Description <- NULL # delete Description
+mylinesdf$length <- NULL # remove length from my lines if it is there (see lower)
+mylinesdf <- rbind(mylinesdf, myroute)
+```
+
+Try to understand the above code and results. Feel free to display the data and export to Google Earth.
+
+### Transformation of coordinate system
+
+Transformations between coordinate systems are crucial to many GIS applications. 
+The **Keyhole Markup Language (kml)** used by Google Earth uses latitude and longitude in a polar WGS84 coordinate system. However, in some of the examples below we will use metric distances.  One way to deal with this is by transforming the data to a planar coordinate system. In R this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** (http://trac.osgeo.org/proj/), which are available in $rgdal$. We will transform our spatial data to the Dutch grid (Rijksdriehoekstelsel), often referred to as RD.
+
+Please note that: 
+
+- some widely spread definitions of the Dutch grid (**EPSG: 28992**) are incomplete;
+- the transformation used below is approximate since it does not account for time dependent differences between WGGS84 and ETRS89 and it does not apply a correction grid for modelling errors in the original measurements of RD. Details can be found at (test)[http://nl.wikipedia.org/wiki/Rijksdriehoekscoordinaten].
+
+*check this - Sytze*
+More information can be found about projections on http://www.spatialreference.org
+
+```{r}
+# define CRS object for RD projection
+prj_string_RD <- CRS("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 
++k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.2369,50.0087,465.658,
+-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +units=m +no_defs")
+
+# perform the coordinate transformation from WGS84 to RD
+mylinesRD <- spTransform(mylinesdf, prj_string_RD)
+```
+
+Now that the geometries are projected to a planar coordinate system 
+the length can be computed using a function from the package rgeos.
+
+```{r, eval=FALSE}
+# use rgeos for computing the length of lines 
+library(rgeos)
+mylinesdf$length <- gLength(mylinesRD, byid=T)
+```
+
+Feel free to export the updated lines to Google Earth or to inspect the contents of the $data$ slot of the object $mylinesdf$ (i.e. type $mylinesdf@data$).
+
+
+### Polygons
+We now continue with $sp} classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around the points you defined earlier.
+
+```{r}
+# make circles around points, with radius equal to distance between points 
+mypointsRD <- spTransform(mypointsdf, prj_string_RD)
+pnt1_rd <- coordinates(mypointsRD)[1,]
+pnt2_rd <- coordinates(mypointsRD)[2,]
+
+# define a series of angles
+ang <- pi*0:200/100
+circle1x <- pnt1_rd[1] + cos(ang) * mylinesdf$length[1]
+circle1y <- pnt1_rd[2] + sin(ang) * mylinesdf$length[1]
+circle2x <- pnt2_rd[1] + cos(ang) * mylinesdf$length[1]
+circle2y <- pnt2_rd[2] + sin(ang) * mylinesdf$length[1] 
+
+# Iterate through some steps to create SpatialPolygonsDataFrame object
+circle1 <- Polygons(list(Polygon(cbind(circle1x, circle1y))),"1")
+circle2 <- Polygons(list(Polygon(cbind(circle2x, circle2y))),"2")
+spcircles <- SpatialPolygons(list(circle1, circle2), proj4string=prj_string_RD)
+circledat <- data.frame(mypointsRD@data, row.names=c("1", "2"))
+circlesdf <- SpatialPolygonsDataFrame(spcircles, circledat)
+```
+
+Similar results can be obtained using the function gBuffer of the package rgeos, as demonstrated below. Notice the use of two overlay functions from the package $rgeos$.
+
+```{r buffering, eval = FALSE}
+buffpoint <- gBuffer(mypointsRD[1,], width=mylinesdf$length[1], quadsegs=25)
+mydiff <- gDifference(circlesdf[1,], buffpoint)
+gArea(mydiff)
+myintersection <- gIntersection(circlesdf[1,], buffpoint)
+gArea(myintersection)
+print(paste("The difference in area =", round(100 * gArea(mydiff) / 
+                                             gArea(myintersection),3), "%"))
+```
+
+Here is an example of a plot of the results which employs a few more advanced options of $spplot$.
+
+```{r basicGeometry, include=TRUE}
+spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"), 
+       sp.layout=list(list("sp.points", mypointsRD, col="red", pch=19, cex=1.5), 
+                      list("sp.lines", mylinesRD, lwd=1.5)))
+
+# fig.cap="Basic points, lines and polygons plotted with $spplot$"
+```
+
+
+
+# Excercise of today
 ## Required challenge
 ## Optional for bonus points
 
