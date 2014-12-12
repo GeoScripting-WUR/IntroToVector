@@ -15,7 +15,7 @@ output:
 
 ## ToDo in the morning
 
-Self study on how to read in vector files
+Go through the whole lesson and try to answer the questions below. We will address the questions in the lesson and discuss in teams.
 
 ## Objective of today
 
@@ -30,16 +30,7 @@ In today's lecture, we will explore the basics of handling spatial vector data i
   - plot spatial vector data;
   - transform between datums and map projections; 
   - apply basic operations on vector data, such as buffering, intersection and area calculation;
-  - ?use a Date-Time class;
   - write spatial vector data to a kml file;
-  - ?convert spatial data read from a plain text file into a spatial class for vector data.
-
-# Self study on how to handle vector files
-
-See the following websites and work through the examples:
-
-- https://www.nceas.ucsb.edu/scicomp/usecases/ReadWriteESRIShapeFiles
-- https://www.nceas.ucsb.edu/scicomp/recipes/projections
 
 # Vector R basics
 
@@ -234,13 +225,21 @@ prj_string_RD <- CRS("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888
 mylinesRD <- spTransform(mylinesdf, prj_string_RD)
 ```
 
+You can always plot the line using the basic plot command
+
+```{r plotmylinesRD, fig.width=3, fig.height=3, message=TRUE, eval=TRUE, fig.align='center',strip.white=TRUE}
+plot(mylinesRD, col = c("red", "blue"))
+box()
+```
+
 Now that the geometries are projected to a planar coordinate system 
 the length can be computed using a function from the package rgeos.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # use rgeos for computing the length of lines 
 library(rgeos)
-mylinesdf$length <- gLength(mylinesRD, byid=T)
+(mylinesdf$length <- gLength(mylinesRD, byid=T))
+
 ```
 
 Feel free to export the updated lines to Google Earth or to inspect the contents of the $data$ slot of the object $mylinesdf$ 
@@ -253,19 +252,37 @@ mylinesdf@data
 ### Polygons
 We now continue with $sp$ classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around the points you defined earlier.
 
-```{r}
+```{r circlepoly, eval=TRUE}
 # make circles around points, with radius equal to distance between points 
-mypointsRD <- spTransform(mypointsdf, prj_string_RD)
+(mypointsRD <- spTransform(mypointsdf, prj_string_RD))
 pnt1_rd <- coordinates(mypointsRD)[1,]
 pnt2_rd <- coordinates(mypointsRD)[2,]
 
-# define a series of angles
+# define a series of angles going from 0 to 2pi
 ang <- pi*0:200/100
 circle1x <- pnt1_rd[1] + cos(ang) * mylinesdf$length[1]
 circle1y <- pnt1_rd[2] + sin(ang) * mylinesdf$length[1]
 circle2x <- pnt2_rd[1] + cos(ang) * mylinesdf$length[1]
 circle2y <- pnt2_rd[2] + sin(ang) * mylinesdf$length[1] 
+c1 <- cbind(circle1x, circle1y)
+c2 <- cbind(circle2x, circle2y)
+```
 
+You can plot everything again using basic R plot commands:
+
+```{r plotcircle, fig.width=4, fig.height=6, message=TRUE, eval=TRUE, fig.align='center'}
+plot(c2, pch = 19, cex = 0.2, col = "red", ylim = range(circle1y, circle2y))
+points(c1, pch = 19, cex = 0.2, col = "blue")
+points(mypointsRD, pch = 3, col= "darkgreen")
+```
+
+Now, we create subsequently
+
+- polygons
+- SpatialPolygons
+- SpatialPolygonsDataFrame
+
+```{r}
 # Iterate through some steps to create SpatialPolygonsDataFrame object
 circle1 <- Polygons(list(Polygon(cbind(circle1x, circle1y))),"1")
 circle2 <- Polygons(list(Polygon(cbind(circle2x, circle2y))),"2")
@@ -276,33 +293,88 @@ circlesdf <- SpatialPolygonsDataFrame(spcircles, circledat)
 
 Similar results can be obtained using the function gBuffer of the package rgeos, as demonstrated below. Notice the use of two overlay functions from the package $rgeos$.
 
-```{r buffering, eval = FALSE}
-library(rgeos)
-buffpoint <- gBuffer(mypointsRD[1,], width=mylinesdf$length[1], quadsegs=25)
-mydiff <- gDifference(circlesdf[1,], buffpoint)
-gArea(mydiff)
-myintersection <- gIntersection(circlesdf[1,], buffpoint)
-gArea(myintersection)
-print(paste("The difference in area =", round(100 * gArea(mydiff) / 
-                                             gArea(myintersection),3), "%"))
+The final results can be plotted using basic R plotting commands:
+
+```{r, fig.height=6, fig.width=4, fig.cap="plot example of final results", fig.align='center'}
+plot(circlesdf, col = c("gray60", "gray40"))
+plot(mypointsRD, add = TRUE, col="red", pch=19, cex=1.5)
+plot(mylinesRD, add = TRUE, col = c("green", "yellow"), lwd=1.5)
+box()
 ```
 
 Here is an example of a plot of the results which employs a few more advanced options of $spplot$.
 
-```{r basicGeometry, eval=FALSE}
+```{r spplotresult, fig.height=6, fig.width=4, fig.cap="spplot example", fig.align='center'}
 spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"), 
        sp.layout=list(list("sp.points", mypointsRD, col="red", pch=19, cex=1.5), 
                       list("sp.lines", mylinesRD, lwd=1.5)))
-
-# fig.cap="Basic points, lines and polygons plotted with $spplot$"
 ```
 
+Try to understand how $spplot$ works by breaking it down in simple steps e.g.
+
+```{r, eval=FALSE}
+spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"))
+```
+
+**Question: **  Which plotting options do you prefer? E.g spplot() or plot()
+
+```{r buffering, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
+library(rgeos)
+buffpoint <- gBuffer(mypointsRD[1,], width=mylinesdf$length[1], quadsegs=2)
+mydiff <- gDifference(circlesdf[1,], buffpoint)
+
+plot(circlesdf[1,], col = "red")
+plot(buffpoint, add = TRUE, lty = 3, lwd = 2, col = "blue")
+
+gArea(mydiff) ## what is the area of the difference?
+
+plot(mydiff, col = "red")
+
+myintersection <- gIntersection(circlesdf[1,], buffpoint)
+
+plot(myintersection, col="blue")
+
+gArea(myintersection)
+print(paste("The difference in area =", round(100 * gArea(mydiff) / 
+                                             gArea(myintersection),2), "%"))
+
+```
+
+- **Question ** What happens if you change $quadsegs$ to a higher number?
+- **Question ** Do you understand the script? What is the difference between $gIntersection$ and $gDifference$?
 
 
 # Excercise of today
-## Required challenge
+
+Download the following data set from:
+
+https://www.dropbox.com/s/vj79q7q02kqzxfs/read-write-shapefiles.zip?dl=0
+
+- Read in the following files using the $rgdal$ library 
+- create a map that visualise the rivers, counties, and centroids using R
+- write the files to kml files
+
+```{r, eval=FALSE}
+ogrInfo(dsn, "nw-rivers")
+ogrInfo(dsn, "nw-centroids")
+ogrInfo(dsn, "nw-counties")
+```
+
+Questions: 
+
+- Where are these spatial vector objects geographically located?
+
 ## Optional for bonus points
+
+- What needs to be done to derive a buffer around the rivers of 200m?
+
+
+
+# Self study on how to handle vector files
+
+
 
 # More info
 
+About projections and code: https://www.nceas.ucsb.edu/scicomp/recipes/projections
 
