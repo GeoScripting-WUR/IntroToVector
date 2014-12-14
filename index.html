@@ -84,7 +84,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <h1><span class="header-section-number">1</span> Today’s items</h1>
 <div id="todo-in-the-morning" class="section level2">
 <h2><span class="header-section-number">1.1</span> ToDo in the morning</h2>
-<p>Go through the whole lesson and try to answer the questions below. We will address the questions in the lesson and discuss in teams.</p>
+<p>Go through the whole lesson and try to answer the questions below. We will address the questions in the lesson and discuss.</p>
 </div>
 <div id="objective-of-today" class="section level2">
 <h2><span class="header-section-number">1.2</span> Objective of today</h2>
@@ -109,18 +109,78 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <h2><span class="header-section-number">2.1</span> Some packages for working with spatial vector data in R</h2>
 <p>The packages <span class="math">\(sp\)</span> and <span class="math">\(rgdal\)</span> are widely used throughout this course. Both packages not only provide functionallity for raster data but also for vector data. For example, rgdal includes bindings to parts of the <strong>OGR Simple Feature Library</strong> which provides access to a variety of vector file formats such as ESRI Shapefiles and kml. Similarly, <span class="math">\(rgeos\)</span> is an interface to the powerful <strong>Geometry Engine Open Source (GEOS)</strong> library for all kind of operations on geometries (buffering, overlaying, area calculations, etc.).</p>
 <p>Thus, functionality that you commonly find in expensive GIS software is also available within R, using free but very powerful software libaries.</p>
-<p>The possiblities are huge; in this course we can only scratch the surface with some essentials which hopefully invite you to experiment further and use them in your research. Details can be found in the book Applied Spatial Data Analysis with R and several vignettes authored by Roger Bivand, Edzer Pebesma and Virgilio Gomez-Rubio. Owing to time constraints, this lecture cannot cover the related package <span class="math">\(spacetime\)</span> with classes and methods for spatio-temporal data.</p>
-<p><em>Bivand:2013ux</em></p>
+<p>The possiblities are huge; in this course we can only scratch the surface with some essentials which hopefully invite you to experiment further and use them in your research. Details can be found in the book Applied Spatial Data Analysis with R and several vignettes authored by Roger Bivand, Edzer Pebesma and Virgilio Gomez-Rubio. Owing to time constraints, this lecture cannot cover the related package <span class="math">\(spacetime\)</span> with classes and methods for spatio-temporal data <span class="citation">(R. S. Bivand, Pebesma, and Rubio 2013)</span>.</p>
 </div>
 <div id="creating-and-manipulating-geometries" class="section level2">
 <h2><span class="header-section-number">2.2</span> Creating and manipulating geometries</h2>
-<p>The package <span class="math">\(sp\)</span> provides classes for spatial-only geometries, such as <span class="math">\(SpatialPoints\)</span> (for points), and combinations of geometries and attribute data, such as a <span class="math">\(SpatialPointsDataFrame\)</span>. The following data classes are available for spatial vector data <em>Edzer:2005ux</em>:</p>
-<p><em>Add table here with an overview</em></p>
+<p>The package <span class="math">\(sp\)</span> provides classes for spatial-only geometries, such as <span class="math">\(SpatialPoints\)</span> (for points), and combinations of geometries and attribute data, such as a <span class="math">\(SpatialPointsDataFrame\)</span>. The following data classes are available for spatial vector data <span class="citation">(E. J. Pebesma and Bivand 2005)</span>:</p>
+<table>
+<caption>Overview of <em>sp</em> package classes spatial-only geometries.</caption>
+<thead>
+<tr class="header">
+<th align="left">data type</th>
+<th align="left">class</th>
+<th align="left">attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">points</td>
+<td align="left"><em>SpatialPoints</em></td>
+<td align="left">No</td>
+</tr>
+<tr class="even">
+<td align="left">points</td>
+<td align="left"><em>SpatialPointsDataFrame</em></td>
+<td align="left">data.frame</td>
+</tr>
+<tr class="odd">
+<td align="left">line</td>
+<td align="left"><em>Line</em></td>
+<td align="left">No</td>
+</tr>
+<tr class="even">
+<td align="left">lines</td>
+<td align="left"><em>Lines</em></td>
+<td align="left">No</td>
+</tr>
+<tr class="odd">
+<td align="left">lines</td>
+<td align="left"><em>SpatailLines</em></td>
+<td align="left">No</td>
+</tr>
+<tr class="even">
+<td align="left">lines</td>
+<td align="left"><em>SpatialLinesDataFrame</em></td>
+<td align="left">data.frame</td>
+</tr>
+<tr class="odd">
+<td align="left">rings</td>
+<td align="left"><em>Polygon</em></td>
+<td align="left">No</td>
+</tr>
+<tr class="even">
+<td align="left">rings</td>
+<td align="left"><em>Polygons</em></td>
+<td align="left">No</td>
+</tr>
+<tr class="odd">
+<td align="left">rings</td>
+<td align="left"><em>SpatailPolygons</em></td>
+<td align="left">No</td>
+</tr>
+<tr class="even">
+<td align="left">rings</td>
+<td align="left"><em>SpatialPolygonsDataFrame</em></td>
+<td align="left">data.frame</td>
+</tr>
+</tbody>
+</table>
 <p>We will go through a few examples of creating geometries from scratch to familiarize yourself with these classes.</p>
 <p>First, start Google Earth on your computer and make a note of the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point. To change the settings in Google Earth click <em>Tools | Options</em> and change the Show lat/Long setting on the 3D View Tab.</p>
 <div id="points-spatialpoints-spatialpointsdataframe" class="section level3">
 <h3><span class="header-section-number">2.2.1</span> Points: SpatialPoints, SpatialPointsDataFrame</h3>
-<p>The example below shows how you can create spatial point objects from these coordinates. Type <span class="math">\(?&lt;function name&gt;\)</span> (e.g. <span class="math">\(?cbind\)</span>) for finding help on the functions used.</p>
+<p>The example below shows how you can create spatial point objects from these coordinates. Type <span class="math">\(?function name\)</span> (e.g. <span class="math">\(?cbind\)</span>) for finding help on the functions used.</p>
 <p><em>Question</em> See ?CRS and have a look at the help.</p>
 <pre class="r"><code># load sp package
 library(sp)
@@ -194,8 +254,7 @@ if (!file.exists(&quot;data&quot;)) {
            &quot;mylinesGE&quot;, driver=&quot;KML&quot;, overwrite_layer=TRUE)
  }</code></pre>
 <p>Check (in Google Earth) whether the attribute data were written to the kml output.</p>
-<p>The function <span class="math">\(readOGR\)</span> allows reading OGR compatible data into a suitable Spatial vector object.</p>
-<p>Similar to <span class="math">\(writeOGR\)</span>, the function requires entries for the arguments <span class="math">\(dsn\)</span> (data source name) and <span class="math">\(layer\)</span> (layer name). The interpretation of these enties vary by driver. Please study details in the help file.</p>
+<p>The function <span class="math">\(readOGR\)</span> allows reading OGR compatible data into a suitable Spatial vector object. Similar to <span class="math">\(writeOGR\)</span>, the function requires entries for the arguments <span class="math">\(dsn\)</span> (data source name) and <span class="math">\(layer\)</span> (layer name). The interpretation of these enties vary by driver. Please study details in the help file.</p>
 <p>Digitize a path (e.g. a bicycle route) between the two points of interest you selected earlier in Google Earth. This can be achieved using the <span class="math">\(Add Path\)</span> functionality of Google Earth. Save the path in the data folder within the working directory under the name <span class="math">\(route.kml\)</span>. We will read this file into a spatial lines object and add it to the already existing <span class="math">\(SpatialLinesDataFrame\)</span> object.</p>
 <pre class="r"><code>dsn = file.path(&quot;data&quot;,&quot;route.kml&quot;)
 ogrListLayers(dsn) ## to find out what the layers are
@@ -345,6 +404,11 @@ ogrInfo(dsn, &quot;nw-counties&quot;)</code></pre>
 <div id="more-info" class="section level1">
 <h1><span class="header-section-number">4</span> More info</h1>
 <p>About projections and code: <a href="https://www.nceas.ucsb.edu/scicomp/recipes/projections" class="uri">https://www.nceas.ucsb.edu/scicomp/recipes/projections</a></p>
+<div class="references">
+<h1>References</h1>
+<p>Bivand, R S, E J Pebesma, and V G Rubio. 2013. “Applied spatial data analysis with R.”</p>
+<p>Pebesma, Edzer J., and Roger S. Bivand. 2005. “Classes and Methods for Spatial Data in R.” <em>R News</em> 5 (2): 9–13. <a href="http://CRAN.R-project.org/doc/Rnews/" class="uri">http://CRAN.R-project.org/doc/Rnews/</a>.</p>
+</div>
 </div>
 
 
