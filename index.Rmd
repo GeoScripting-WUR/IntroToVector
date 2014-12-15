@@ -1,7 +1,7 @@
 ---
 title: 'Lesson 5: Introduction to the vector handling in R'
 author: "Jan Verbesselt and Sytze de Bruyn"
-date: 15/12/2014
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     theme: united
