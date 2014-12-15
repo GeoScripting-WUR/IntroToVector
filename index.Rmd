@@ -24,10 +24,10 @@ Learn how to handle vector data (e.g. ESRI shape files)
 
 ## Learning outcomes of today:
 
-In today's lecture, we will explore the basics of handling spatial vector data in R. There are several R packages for this purpose but we will focus on using $sp$, $rgdal$, $rgeos and some related packages. At the end of the lecture, you should be able to:
+In today's lecture, we will explore the basics of handling spatial vector data in R. There are several R packages for this purpose but we will focus on using `sp`, `rgdal`, `rgeos` and some related packages. At the end of the lecture, you should be able to:
 
   - create point, line and polygon objects from scratch;
-  - explore the structure of $sp$ classes for spatial vector data;
+  - explore the structure of `sp` classes for spatial vector data;
   - plot spatial vector data;
   - transform between datums and map projections; 
   - apply basic operations on vector data, such as buffering, intersection and area calculation;
@@ -37,17 +37,21 @@ In today's lecture, we will explore the basics of handling spatial vector data i
 
 ## Some packages for working with spatial vector data in R
 
-The packages $sp$ and $rgdal$ are widely used throughout this course. 
+The packages `sp` and `rgdal` are widely used throughout this course. 
 Both packages not only provide functionallity for raster data but also for vector data. 
-For example, rgdal includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as ESRI Shapefiles and kml. Similarly, $rgeos$ is an interface to the powerful **Geometry Engine Open Source (GEOS)** library for all kind of operations on geometries (buffering, overlaying, area calculations, etc.).  
+For example, `rgdal` includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as ESRI Shapefiles and kml. The OGR library is part of the widely used **Geospatial Data Abstraction Library** (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data.
+
+The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow acces from a variety of other languages including `R`, `Python` but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunaly, the `rgdal` package, providing GDAL bindings in R, is well documented with lot's of examples. The same is valid for the Python libaries.
+
+Similarly, `rgeos` is an interface to the powerful **Geometry Engine Open Source (GEOS)** library for all kind of operations on geometries (buffering, overlaying, area calculations, etc.).  
 
 Thus, functionality that you commonly find in expensive GIS software is also available within R, using free but very powerful software libaries. 
 
-The possiblities are huge; in this course we can only scratch the surface with some essentials which hopefully invite you to experiment further and use them in your research. Details can be found in the book Applied Spatial Data Analysis with R and several vignettes authored by Roger Bivand, Edzer Pebesma and Virgilio Gomez-Rubio. Owing to time constraints, this lecture cannot cover the related package $spacetime$ with classes and methods for spatio-temporal data [@Bivand:2013ux].
+The possiblities are huge; in this course we can only scratch the surface with some essentials which hopefully invite you to experiment further and use them in your research. Details can be found in the book Applied Spatial Data Analysis with R and several vignettes authored by Roger Bivand, Edzer Pebesma and Virgilio Gomez-Rubio. Owing to time constraints, this lecture cannot cover the related package `spacetime` with classes and methods for spatio-temporal data [@Bivand:2013ux].
 
 ## Creating and manipulating geometries
 
-The package $sp$ provides classes for spatial-only geometries, such as $SpatialPoints$ (for points), and combinations of geometries and attribute data, such as a $SpatialPointsDataFrame$. The following data classes are available for spatial vector data [@Edzer:2005ux]:
+The package `sp` provides classes for spatial-only geometries, such as `SpatialPoints` (for points), and combinations of geometries and attribute data, such as a `SpatialPointsDataFrame`. The following data classes are available for spatial vector data [@Edzer:2005ux]:
 
 | data type     | class                     | attribute     |
 |-------------  |-----------------          |-------------  |
@@ -69,7 +73,7 @@ We will go through a few examples of creating geometries from scratch to familia
 First, start Google Earth on your computer and make a note of the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point. To change the settings in Google Earth click *Tools | Options* and change the Show lat/Long setting on the 3D View Tab. 
 
 ### Points: SpatialPoints, SpatialPointsDataFrame
-The example below shows how you can create spatial point objects from these coordinates. Type $?function name$ (e.g. $?cbind$) for finding help on the functions used.
+The example below shows how you can create spatial point objects from these coordinates. Type `?function name` (e.g. `?cbind`) for finding help on the functions used.
 
 *Question* See ?CRS and have a look at the help.
 ```{r, message=FALSE}
@@ -131,7 +135,7 @@ spplot(mypointsdf, col.regions = c(1,2), zcol="id")
 ### Lines
 
 Now let us connect the two points by a straight line. First find information on 
-the classes for lines that are available in $sp$. The goal is to create 
+the classes for lines that are available in `sp`. The goal is to create 
 SpatialLinesDataFrame but we have to go through some other classes.
 
 ```{r}
@@ -164,7 +168,7 @@ spplot(mylinesdf, col.regions = "blue",
 ### Writing and reading spatial vector data using OGR
 
 What now follows is a brief intermezzo before we continu with the classess for polygons. 
-Let us first export the objects created thus far to kml files that can be displayed in Google Earth. We will use OGR functionality for that purpose, which is available through the package $rgdal$.
+Let us first export the objects created thus far to kml files that can be displayed in Google Earth. We will use OGR functionality for that purpose, which is available through the package `rgdal`.
 
 ```{r, eval=FALSE, echo=TRUE}
 library(rgdal)
@@ -181,10 +185,10 @@ if (!file.exists("data")) {
 
 Check (in Google Earth) whether the attribute data were written to the kml output.
 
-The function $readOGR$ allows reading OGR compatible data into a suitable Spatial vector object. 
-Similar to $writeOGR$, the function requires entries for the arguments $dsn$ (data source name) and $layer$ (layer name). The interpretation of these enties vary by driver. Please study details in the help file.
+The function `readOGR` allows reading OGR compatible data into a suitable Spatial vector object. 
+Similar to `writeOGR`, the function requires entries for the arguments `dsn` (data source name) and `layer` (layer name). The interpretation of these enties vary by driver. Please study details in the help file.
 
-Digitize a path (e.g. a bicycle route) between the two points of interest you selected earlier in Google Earth. This can be achieved using the $Add Path$ functionality of Google Earth. Save the path in the data folder within the working directory under the name $route.kml$. We will read this file into a spatial lines object and add it to the already existing $SpatialLinesDataFrame$ object.
+Digitize a path (e.g. a bicycle route) between the two points of interest you selected earlier in Google Earth. This can be achieved using the `Add Path` functionality of Google Earth. Save the path in the data folder within the working directory under the name `route.kml`. We will read this file into a spatial lines object and add it to the already existing `SpatialLinesDataFrame` object.
 
 ```{r, eval=FALSE}
 dsn = file.path("data","route.kml")
@@ -214,7 +218,16 @@ Try to understand the above code and results. Feel free to display the data and 
 ### Transformation of coordinate system
 
 Transformations between coordinate systems are crucial to many GIS applications. 
-The **Keyhole Markup Language (kml)** used by Google Earth uses latitude and longitude in a polar WGS84 coordinate system. However, in some of the examples below we will use metric distances.  One way to deal with this is by transforming the data to a planar coordinate system. In R this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** (http://trac.osgeo.org/proj/), which are available in $rgdal$. We will transform our spatial data to the Dutch grid (Rijksdriehoekstelsel), often referred to as RD.
+The **Keyhole Markup Language (kml)** used by Google Earth uses latitude and longitude in a polar WGS84 coordinate system (i.e. geographic coordinates). However, in some of the examples below we will use metric distances (i.e. carthographic coordinates). 
+
+There are two types of coordinate systems that you need to recognise: **projected coordinate systems** and **unprojected coordinates systems**
+
+One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. 
+Projected coordinates are coordinates that refer to a point on a two-dimensional map that *represents* the surface of the Earth (i.e. **projected coordinate system**).
+
+Latitude and Longitude values are an example of an **unprojected coordinate system**. These are coordinates that directly refer to a point on the Earth's surface.
+
+One way to deal with this is by transforming the data to a planar coordinate system. In R this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** (http://trac.osgeo.org/proj/), which are available in `rgdal`. We will transform our spatial data to the Dutch grid (Rijksdriehoekstelsel), often referred to as RD.
 
 Please note that: 
 
@@ -248,10 +261,9 @@ the length can be computed using a function from the package rgeos.
 # use rgeos for computing the length of lines 
 library(rgeos)
 (mylinesdf$length <- gLength(mylinesRD, byid=T))
-
 ```
 
-Feel free to export the updated lines to Google Earth or to inspect the contents of the $data$ slot of the object $mylinesdf$ 
+Feel free to export the updated lines to Google Earth or to inspect the contents of the `data` slot of the object `mylinesdf` 
 
 ```{r, eval=FALSE}
 mylinesdf@data
@@ -259,7 +271,7 @@ mylinesdf@data
 
 
 ### Polygons
-We now continue with $sp$ classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around the points you defined earlier.
+We now continue with `sp` classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around the points you defined earlier.
 
 ```{r circlepoly, eval=TRUE}
 # make circles around points, with radius equal to distance between points 
@@ -300,7 +312,7 @@ circledat <- data.frame(mypointsRD@data, row.names=c("1", "2"))
 circlesdf <- SpatialPolygonsDataFrame(spcircles, circledat)
 ```
 
-Similar results can be obtained using the function gBuffer of the package rgeos, as demonstrated below. Notice the use of two overlay functions from the package $rgeos$.
+Similar results can be obtained using the function gBuffer of the package rgeos, as demonstrated below. Notice the use of two overlay functions from the package `rgeos`.
 
 The final results can be plotted using basic R plotting commands:
 
@@ -311,7 +323,7 @@ plot(mylinesRD, add = TRUE, col = c("green", "yellow"), lwd=1.5)
 box()
 ```
 
-Here is an example of a plot of the results which employs a few more advanced options of $spplot$.
+Here is an example of a plot of the results which employs a few more advanced options of `spplot`.
 
 ```{r spplotresult, fig.height=6, fig.width=4, fig.cap="spplot example", fig.align='center'}
 spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"), 
@@ -319,13 +331,13 @@ spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"),
                       list("sp.lines", mylinesRD, lwd=1.5)))
 ```
 
-Try to understand how $spplot$ works by breaking it down in simple steps e.g.
+Try to understand how `spplot` works by breaking it down in simple steps e.g.
 
 ```{r, eval=FALSE}
 spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"))
 ```
 
-**Question: **  Which plotting options do you prefer? E.g spplot() or plot()
+**Question: **  Which plotting options do you prefer? E.g `spplot` or `plot`
 
 ```{r buffering, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
 library(rgeos)
@@ -349,9 +361,16 @@ print(paste("The difference in area =", round(100 * gArea(mydiff) /
 
 ```
 
-- **Question ** What happens if you change $quadsegs$ to a higher number?
-- **Question ** Do you understand the script? What is the difference between $gIntersection$ and $gDifference$?
+- **Question ** What happens if you change `quadsegs` to a higher number?
+- **Question ** Do you understand the script? What is the difference between `gIntersection` and `gDifference`?
 
+# Today's summary
+
+We learned about:
+
+- projection systems: unprojected versus projected
+- GDAL/OGR and GEOS C/C++ libraries with binding in R via packages `rgdal`, `rgeos`.
+- 
 
 # Excercise of today
 
@@ -359,7 +378,7 @@ Download the following data set from:
 
 https://www.dropbox.com/s/w25dwfo7c8wuaxv/read-write-shapefiles.zip?dl=0
 
-- Read in the following files using the $rgdal$ library 
+- Read in the following files using the `rgdal` library 
 - create a map that visualise the rivers, counties, and centroids using R
 - write the files to kml files
 
