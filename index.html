@@ -258,8 +258,7 @@ if (!file.exists(&quot;data&quot;)) {
 <p>Digitize a path (e.g. a bicycle route) between the two points of interest you selected earlier in Google Earth. This can be achieved using the <span class="math">\(Add Path\)</span> functionality of Google Earth. Save the path in the data folder within the working directory under the name <span class="math">\(route.kml\)</span>. We will read this file into a spatial lines object and add it to the already existing <span class="math">\(SpatialLinesDataFrame\)</span> object.</p>
 <pre class="r"><code>dsn = file.path(&quot;data&quot;,&quot;route.kml&quot;)
 ogrListLayers(dsn) ## to find out what the layers are
-myroute &lt;- readOGR(dsn = file.path(&quot;data&quot;,&quot;route.kml&quot;), 
-                   layer = &quot;route&quot;)</code></pre>
+myroute &lt;- readOGR(dsn, layer = ogrListLayers(dsn))</code></pre>
 <pre class="r"><code># put both in single data frame
 myroute@proj4string &lt;- prj_string_WGS
 names(myroute)</code></pre>
@@ -381,7 +380,7 @@ plot(myintersection, col=&quot;blue&quot;)</code></pre>
 <div id="excercise-of-today" class="section level1">
 <h1><span class="header-section-number">3</span> Excercise of today</h1>
 <p>Download the following data set from:</p>
-<p><a href="https://www.dropbox.com/s/vj79q7q02kqzxfs/read-write-shapefiles.zip?dl=0" class="uri">https://www.dropbox.com/s/vj79q7q02kqzxfs/read-write-shapefiles.zip?dl=0</a></p>
+<p><a href="https://www.dropbox.com/s/w25dwfo7c8wuaxv/read-write-shapefiles.zip?dl=0" class="uri">https://www.dropbox.com/s/w25dwfo7c8wuaxv/read-write-shapefiles.zip?dl=0</a></p>
 <ul>
 <li>Read in the following files using the <span class="math">\(rgdal\)</span> library</li>
 <li>create a map that visualise the rivers, counties, and centroids using R</li>

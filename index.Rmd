@@ -189,13 +189,12 @@ Digitize a path (e.g. a bicycle route) between the two points of interest you se
 ```{r, eval=FALSE}
 dsn = file.path("data","route.kml")
 ogrListLayers(dsn) ## to find out what the layers are
-myroute <- readOGR(dsn = file.path("data","route.kml"), 
-                   layer = "route")
+myroute <- readOGR(dsn, layer = ogrListLayers(dsn))
 ```
 
 ```{r, eval=TRUE, echo=FALSE}
 if (!file.exists(file.path("data","route.rda"))) {
-  myroute <- readOGR(file.path("data","route.kml"), "route")
+  myroute <- readOGR(file.path("data","route.kml"), ogrListLayers(dsn))
   save(myroute, file = file.path("data","route.rda"), compress="xz")
 } else {
   load(file.path("data","route.rda"))
@@ -358,7 +357,7 @@ print(paste("The difference in area =", round(100 * gArea(mydiff) /
 
 Download the following data set from:
 
-https://www.dropbox.com/s/vj79q7q02kqzxfs/read-write-shapefiles.zip?dl=0
+https://www.dropbox.com/s/w25dwfo7c8wuaxv/read-write-shapefiles.zip?dl=0
 
 - Read in the following files using the $rgdal$ library 
 - create a map that visualise the rivers, counties, and centroids using R
