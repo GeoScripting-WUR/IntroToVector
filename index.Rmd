@@ -381,7 +381,7 @@ We learned about:
 
 - projection systems: unprojected versus projected
 - GDAL/OGR and GEOS C/C++ libraries with binding in R via packages `rgdal`, `rgeos`.
-- 
+- ...
 
 # Excercise of today
 
