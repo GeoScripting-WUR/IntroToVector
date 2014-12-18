@@ -39,9 +39,11 @@ In today's lecture, we will explore the basics of handling spatial vector data i
 ## Some packages for working with spatial vector data in R
 
 The packages `sp` and `rgdal` are widely used throughout this course. 
-Both packages not only provide functionallity for raster data but also for vector data. 
-For example, `rgdal` includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as ESRI Shapefiles and kml. The OGR library is part of the widely used **Geospatial Data Abstraction Library** (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data.
+Both packages not only provide functionallity for raster data but also for vector data.
+The `sp` package provides classes for importing, manipulating and exporting spatial data in R, and methods 
 
+
+For example, `rgdal` includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as ESRI Shapefiles and kml. The OGR library is part of the widely used **Geospatial Data Abstraction Library** (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data.
 The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow acces from a variety of other languages including `R`, `Python` but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunaly, the `rgdal` package, providing GDAL bindings in R, is well documented with lot's of examples. The same is valid for the Python libaries.
 
 Similarly, `rgeos` is an interface to the powerful **Geometry Engine Open Source (GEOS)** library for all kind of operations on geometries (buffering, overlaying, area calculations, etc.).  
@@ -128,10 +130,10 @@ spplot(mypointsdf, zcol="Name", col.regions = c("red", "blue"),
 ```{r, eval=FALSE}
 ## play with the spplot function
 ## What is needed to make the following work?
-spplot(mypointsdf, col.regions = c(1,2), zcol="id")
+spplot(mypointsdf, col.regions = c(1,2))
 ```
 
-*Notice the difference between the objects mypoints and mypointsdf.*
+**Question:** What is the the difference between the objects mypoints and mypointsdf.
 
 ### Lines
 
@@ -141,14 +143,18 @@ SpatialLinesDataFrame but we have to go through some other classes.
 
 ```{r}
 # consult help on SpatialLines class
-simple_line <- Line(coords)
-lines_obj <- Lines(list(simple_line), "1")
-spatlines <- SpatialLines(list(lines_obj), proj4string=prj_string_WGS)
-line_data <- data.frame(Name = "straight line", row.names="1")
-mylinesdf <- SpatialLinesDataFrame(spatlines, line_data)
+(simple_line <- Line(coords))
+(lines_obj <- Lines(list(simple_line), "1"))
+(spatlines <- SpatialLines(list(lines_obj), proj4string=prj_string_WGS))
+(line_data <- data.frame(Name = "straight line", row.names="1"))
+(mylinesdf <- SpatialLinesDataFrame(spatlines, line_data))
 ```
 
 *Q: What is the difference between Line and Lines?*
+```{r, echo=FALSE, eval=FALSE}
+class(simple_line)
+class(lines_obj)
+```
 
 ```{r, eval=FALSE}
 class(mylinesdf)
@@ -168,8 +174,9 @@ spplot(mylinesdf, col.regions = "blue",
 
 ### Writing and reading spatial vector data using OGR
 
-What now follows is a brief intermezzo before we continu with the classess for polygons. 
-Let us first export the objects created thus far to kml files that can be displayed in Google Earth. We will use OGR functionality for that purpose, which is available through the package `rgdal`.
+What now follows is a brief intermezzo before we continue with the classess for polygons. 
+Let us first export the objects created as kml files that can be displayed in Google Earth. 
+We will use the `OGR` functionality available through the package `rgdal`.
 
 ```{r, eval=FALSE, echo=TRUE}
 library(rgdal)
@@ -189,7 +196,7 @@ Check (in Google Earth) whether the attribute data were written to the kml outpu
 The function `readOGR` allows reading OGR compatible data into a suitable Spatial vector object. 
 Similar to `writeOGR`, the function requires entries for the arguments `dsn` (data source name) and `layer` (layer name). The interpretation of these enties vary by driver. Please study details in the help file.
 
-Digitize a path (e.g. a bicycle route) between the two points of interest you selected earlier in Google Earth. This can be achieved using the `Add Path` functionality of Google Earth. Save the path in the data folder within the working directory under the name `route.kml`. We will read this file into a spatial lines object and add it to the already existing `SpatialLinesDataFrame` object.
+Digitize a path (e.g. a bicycle route) between the two points of interest you selected earlier in Google Earth. This can be achieved using the `Add Path` functionality of Google Earth (see [here](https://support.google.com/earth/answer/148072?hl=en) for more info. Save the path in the data folder within the working directory under the name `route.kml`. We will read this file into a spatial lines object and add it to the already existing `SpatialLinesDataFrame` object.
 
 ```{r, eval=FALSE}
 dsn = file.path("data","route.kml")
@@ -219,17 +226,13 @@ Try to understand the above code and results. Feel free to display the data and 
 ### Transformation of coordinate system
 
 Transformations between coordinate systems are crucial to many GIS applications. 
-The **Keyhole Markup Language (kml)** used by Google Earth uses latitude and longitude in a polar WGS84 coordinate system (i.e. geographic coordinates). However, in some of the examples below we will use metric distances (i.e. carthographic coordinates). 
+The **Keyhole Markup Language (kml)** used by Google Earth uses latitude and longitude in a polar WGS84 coordinate system (i.e. geographic coordinates). However, in some of the examples below we will use metric distances (i.e. carthographic coordinates).There are two types of coordinate systems that you need to recognise: **projected coordinate systems** and **unprojected coordinates systems**
 
-There are two types of coordinate systems that you need to recognise: **projected coordinate systems** and **unprojected coordinates systems**
+One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. Projected coordinates are coordinates that refer to a point on a two-dimensional map that *represents* the surface of the Earth (i.e. **projected coordinate system**).Latitude and Longitude values are an example of an **unprojected coordinate system**. These are coordinates that directly refer to a point on the Earth's surface. One way to deal with this is by transforming the data to a planar coordinate system. In `R` this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** (http://trac.osgeo.org/proj/), which are available in `rgdal`.  
 
-One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. 
-Projected coordinates are coordinates that refer to a point on a two-dimensional map that *represents* the surface of the Earth (i.e. **projected coordinate system**).
+Central to spatial data in the `sp` package is that they have a coordinate reference system, which is coded in object of `CRS` class. Central to operations on different spatial data sets is that their coordinate reference system is compatible (i.e., identical). This CRS can be a character string describing a reference system in a way understood by the `PROJ.4` projection library, or a (character) missing value. An interface to the `PROJ.4` library is available only if the R package `rgdal` is present.
 
-Latitude and Longitude values are an example of an **unprojected coordinate system**. These are coordinates that directly refer to a point on the Earth's surface.
-
-One way to deal with this is by transforming the data to a planar coordinate system. In R this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** (http://trac.osgeo.org/proj/), which are available in `rgdal`. We will transform our spatial data to the Dutch grid (Rijksdriehoekstelsel), often referred to as RD.
-
+We will transform our spatial data to the Dutch grid (Rijksdriehoekstelsel), often referred to as RD.
 Please note that: 
 
 - some widely spread definitions of the Dutch grid (**EPSG: 28992**) are incomplete 
