@@ -71,7 +71,10 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#lines"><span class="toc-section-number">2.2.2</span> Lines</a></li>
 <li><a href="#writing-and-reading-spatial-vector-data-using-ogr"><span class="toc-section-number">2.2.3</span> Writing and reading spatial vector data using OGR</a></li>
 <li><a href="#transformation-of-coordinate-system"><span class="toc-section-number">2.2.4</span> Transformation of coordinate system</a></li>
-<li><a href="#polygons"><span class="toc-section-number">2.2.5</span> Polygons</a></li>
+<li><a href="#polygons"><span class="toc-section-number">2.2.5</span> Polygons</a><ul>
+<li><a href="#polygons-with-the-sp-package"><span class="toc-section-number">2.2.5.1</span> Polygons with the <code>sp</code> package</a></li>
+<li><a href="#polygon-operations-with-rgeos-buffer-intersect-difference"><span class="toc-section-number">2.2.5.2</span> Polygon operations with <code>rgeos</code> (buffer, intersect, difference)</a></li>
+</ul></li>
 </ul></li>
 </ul></li>
 <li><a href="#todays-summary"><span class="toc-section-number">3</span> Today’s summary</a></li>
@@ -385,8 +388,11 @@ library(rgeos)</code></pre>
 </div>
 <div id="polygons" class="section level3">
 <h3><span class="header-section-number">2.2.5</span> Polygons</h3>
+<div id="polygons-with-the-sp-package" class="section level4">
+<h4><span class="header-section-number">2.2.5.1</span> Polygons with the <code>sp</code> package</h4>
 <p>We now continue with <code>sp</code> classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around the points you defined earlier.</p>
-<pre class="r"><code># make circles around points, with radius equal to distance between points 
+<pre class="r"><code># perform the coordinate transformation from WGS84 (i.e. not a projection) to RD (projected)&quot;
+# this step is necessary to be able to measure objectives in 2D (e.g. meters)
 (mypointsRD &lt;- spTransform(mypointsdf, prj_string_RD))</code></pre>
 <pre><code>##            coordinates id            Name
 ## 1   (174151, 444348.4)  1  my first point
@@ -394,6 +400,7 @@ library(rgeos)</code></pre>
 <pre class="r"><code>pnt1_rd &lt;- coordinates(mypointsRD)[1,]
 pnt2_rd &lt;- coordinates(mypointsRD)[2,]
 
+# make circles around points, with radius equal to distance between points
 # define a series of angles going from 0 to 2pi
 ang &lt;- pi*0:200/100
 circle1x &lt;- pnt1_rd[1] + cos(ang) * mylinesdf$length[1]
@@ -434,7 +441,11 @@ box()</code></pre>
 <p>Try to understand how <code>spplot</code> works by breaking it down in simple steps e.g.</p>
 <pre class="r"><code>spplot(circlesdf, zcol=&quot;Name&quot;, col.regions=c(&quot;gray60&quot;, &quot;gray40&quot;))</code></pre>
 <p><strong>Question: </strong> Which plotting options do you prefer? E.g <code>spplot</code> or <code>plot</code></p>
+</div>
+<div id="polygon-operations-with-rgeos-buffer-intersect-difference" class="section level4">
+<h4><span class="header-section-number">2.2.5.2</span> Polygon operations with <code>rgeos</code> (buffer, intersect, difference)</h4>
 <pre class="r"><code>library(rgeos)
+## Expand the given geometry to include the area within the specified width with specific styling options.
 buffpoint &lt;- gBuffer(mypointsRD[1,], width=mylinesdf$length[1], quadsegs=2)
 mydiff &lt;- gDifference(circlesdf[1,], buffpoint)
 
@@ -458,6 +469,7 @@ plot(myintersection, col=&quot;blue&quot;)</code></pre>
 <li><strong>Question </strong> What happens if you change <code>quadsegs</code> to a higher number?</li>
 <li><strong>Question </strong> Do you understand the script? What is the difference between <code>gIntersection</code> and <code>gDifference</code>?</li>
 </ul>
+</div>
 </div>
 </div>
 </div>

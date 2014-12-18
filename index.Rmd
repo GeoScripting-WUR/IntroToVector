@@ -275,14 +275,18 @@ mylinesdf@data
 
 
 ### Polygons
+
+#### Polygons with the `sp` package
 We now continue with `sp` classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around the points you defined earlier.
 
 ```{r circlepoly, eval=TRUE}
-# make circles around points, with radius equal to distance between points 
+# perform the coordinate transformation from WGS84 (i.e. not a projection) to RD (projected)"
+# this step is necessary to be able to measure objectives in 2D (e.g. meters)
 (mypointsRD <- spTransform(mypointsdf, prj_string_RD))
 pnt1_rd <- coordinates(mypointsRD)[1,]
 pnt2_rd <- coordinates(mypointsRD)[2,]
 
+# make circles around points, with radius equal to distance between points
 # define a series of angles going from 0 to 2pi
 ang <- pi*0:200/100
 circle1x <- pnt1_rd[1] + cos(ang) * mylinesdf$length[1]
@@ -343,8 +347,11 @@ spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"))
 
 **Question: **  Which plotting options do you prefer? E.g `spplot` or `plot`
 
+#### Polygon operations with `rgeos` (buffer, intersect, difference)
+
 ```{r buffering, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
 library(rgeos)
+## Expand the given geometry to include the area within the specified width with specific styling options.
 buffpoint <- gBuffer(mypointsRD[1,], width=mylinesdf$length[1], quadsegs=2)
 mydiff <- gDifference(circlesdf[1,], buffpoint)
 
