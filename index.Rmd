@@ -56,7 +56,7 @@ The possiblities are huge; in this course we can only scratch the surface with s
 
 The package `sp` provides classes for spatial-only geometries, such as `SpatialPoints` (for points), and combinations of geometries and attribute data, such as a `SpatialPointsDataFrame`. The following data classes are available for spatial vector data [@Edzer:2005ux]:
 
-| data type     | class                     | attribute     |
+| Geometry      | class                     | attribute     |
 |-------------  |-----------------          |-------------  |
 | points        | *SpatialPoints*           | No            |
 | points        | *SpatialPointsDataFrame*  | data.frame   |
@@ -182,13 +182,12 @@ We will use the `OGR` functionality available through the package `rgdal`.
 library(rgdal)
 # write to kml ; below we assume a subdirectory data within the current 
 # working directory.
-if (!file.exists("data")) { 
-  dir.create("data") 
-  writeOGR(mypointsdf, file.path("data","mypointsGE.kml"), 
-           "mypointsGE", driver="KML", overwrite_layer=TRUE)
-  writeOGR(mylinesdf, file.path("data","mylinesGE.kml"), 
-           "mylinesGE", driver="KML", overwrite_layer=TRUE)
- }
+dir.create("data", showWarnings = FALSE) 
+writeOGR(mypointsdf, file.path("data","mypointsGE.kml"), 
+       "mypointsGE", driver="KML", overwrite_layer=TRUE)
+writeOGR(mylinesdf, file.path("data","mylinesGE.kml"), 
+       "mylinesGE", driver="KML", overwrite_layer=TRUE)
+
 ```
 
 Check (in Google Earth) whether the attribute data were written to the kml output.
@@ -215,7 +214,7 @@ if (!file.exists(file.path("data","route.rda"))) {
 
 ```{r}
 # put both in single data frame
-myroute@proj4string <- prj_string_WGS
+proj4string(myroute) <- prj_string_WGS
 names(myroute)
 myroute$Description <- NULL # delete Description
 mylinesdf <- rbind(mylinesdf, myroute)
@@ -243,9 +242,7 @@ Details can be found at http://nl.wikipedia.org/wiki/Rijksdriehoekscoordinaten.
 
 ```{r}
 # define CRS object for RD projection
-prj_string_RD <- CRS("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 
-+k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.2369,50.0087,465.658,
--0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +units=m +no_defs")
+prj_string_RD <- CRS("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +units=m +no_defs")
 
 # perform the coordinate transformation from WGS84 to RD
 mylinesRD <- spTransform(mylinesdf, prj_string_RD)
@@ -271,6 +268,8 @@ Feel free to export the updated lines to Google Earth or to inspect the contents
 
 ```{r, eval=FALSE}
 mylinesdf@data
+#or
+data.frame(mylinesdf)
 ```
 
 
@@ -379,9 +378,11 @@ print(paste("The difference in area =", round(100 * gArea(mydiff) /
 
 We learned about:
 
-- projection systems: unprojected versus projected
-- GDAL/OGR and GEOS C/C++ libraries with binding in R via packages `rgdal`, `rgeos`.
-- ...
+- The spatial classes of the **sp** package
+- How to read/write data and change data format with **rgdal** package (`writeOGR()` and `writeOGR()`)
+- Visualize spatial vector data in R and in GoogleEarth
+- How to perform simple operations on Geometries in R using the **rgeos** package
+
 
 # Excercise of today
 
