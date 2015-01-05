@@ -1,6 +1,6 @@
 ---
 title: 'Lesson 5: Introduction to the vector handling in R'
-author: "Jan Verbesselt and Sytze de Bruyn"
+author: "Jan Verbesselt, Sytze de Bruyn and Loïc Dutrieux"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
@@ -21,7 +21,7 @@ Go through the whole lesson and try to answer the questions below. We will addre
 
 ## Objective of today
 
-Learn how to handle vector data (e.g. ESRI shape files)
+Learn how to handle vector data
 
 ## Learning outcomes of today:
 
