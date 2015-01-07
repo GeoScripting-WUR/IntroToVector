@@ -79,9 +79,9 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </ul></li>
 <li><a href="#todays-summary"><span class="toc-section-number">3</span> Today’s summary</a></li>
 <li><a href="#excercise-of-today"><span class="toc-section-number">4</span> Excercise of today</a><ul>
-<li><a href="#optional-for-bonus-points"><span class="toc-section-number">4.1</span> Optional for bonus points</a></li>
+<li><a href="#submit"><span class="toc-section-number">4.1</span> Submit</a></li>
+<li><a href="#more-info"><span class="toc-section-number">4.2</span> More info</a></li>
 </ul></li>
-<li><a href="#more-info"><span class="toc-section-number">5</span> More info</a></li>
 </ul>
 </div>
 
@@ -487,34 +487,31 @@ plot(myintersection, col=&quot;blue&quot;)</code></pre>
 </div>
 <div id="excercise-of-today" class="section level1">
 <h1><span class="header-section-number">4</span> Excercise of today</h1>
-<p>Create a clear and documented script that:</p>
+<p>First, download and unzip the following shape files manually from this <a href="http://www.mapcruzin.com/free-netherlands-arcgis-maps-shapefiles.htm">website</a>:</p>
 <ul>
-<li>Downloads the following data set and unzips: <a href="https://www.dropbox.com/s/w25dwfo7c8wuaxv/read-write-shapefiles.zip?dl=0" class="uri">https://www.dropbox.com/s/w25dwfo7c8wuaxv/read-write-shapefiles.zip?dl=0</a></li>
-<li>Reads in the rivers, centroids, counties shapefiles using the <code>rgdal</code> library</li>
-<li>Creates a map that visualises the rivers, counties, and centroids at once (hint use <code>plot(, add = TRUE)</code>)</li>
-<li>Write the river file to kml files, to check where the river file is located.</li>
+<li>Places</li>
+<li>Railways</li>
 </ul>
-<pre class="r"><code>ogrInfo(dsn, &quot;nw-rivers&quot;)
-ogrInfo(dsn, &quot;nw-centroids&quot;)
-ogrInfo(dsn, &quot;nw-counties&quot;)</code></pre>
-<p>Questions:</p>
+<p>Second, create a clear and documented script as part of a new Rstudio Project (set-up as descriped in lesson 3) that:</p>
 <ul>
-<li>Where are these spatial vector objects geographically located?</li>
+<li>Selects the “industrial” (<code>type == &quot;industrial&quot;</code>) railways</li>
+<li>Buffers the “industrial” railways with a buffer of 1000m (hint: <code>gBuffer</code> with <code>byid=TRUE</code>)</li>
+<li>Find the place (i.e. a city) that <code>intersects</code> with this buffer.</li>
+<li>Create a <code>plot</code> that shows the buffer, the points, and the name of the city</li>
+<li>write down the name of the city and the <code>population</code> of that city as one comment at the end of the script.</li>
 </ul>
-<div id="optional-for-bonus-points" class="section level2">
-<h2><span class="header-section-number">4.1</span> Optional for bonus points</h2>
-<ul>
-<li>What needs to be done to derive a buffer around the rivers of 200m?</li>
-</ul>
+<p>Bonus (optional!): if you can also download and unzip this within the script.</p>
+<div id="submit" class="section level2">
+<h2><span class="header-section-number">4.1</span> Submit</h2>
+<p>Put your project on your gitHub account as a new repository and send the clone url to me (Jan) by e-mail before monday (1030)</p>
 </div>
-</div>
-<div id="more-info" class="section level1">
-<h1><span class="header-section-number">5</span> More info</h1>
+<div id="more-info" class="section level2">
+<h2><span class="header-section-number">4.2</span> More info</h2>
 <p>About projections and code: <a href="https://www.nceas.ucsb.edu/scicomp/recipes/projections" class="uri">https://www.nceas.ucsb.edu/scicomp/recipes/projections</a></p>
 <div class="references">
-<h1>References</h1>
 <p>Bivand, R S, E J Pebesma, and V G Rubio. 2013. “Applied spatial data analysis with R.”</p>
 <p>Pebesma, Edzer J., and Roger S. Bivand. 2005. “Classes and Methods for Spatial Data in R.” <em>R News</em> 5 (2): 9–13. <a href="http://CRAN.R-project.org/doc/Rnews/" class="uri">http://CRAN.R-project.org/doc/Rnews/</a>.</p>
+</div>
 </div>
 </div>
 

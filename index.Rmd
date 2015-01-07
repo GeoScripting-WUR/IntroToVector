@@ -384,37 +384,25 @@ We learned about:
 
 # Excercise of today
 
-First download and unzip the following "manually" files in your `data` directory:
-https://www.dropbox.com/s/w25dwfo7c8wuaxv/read-write-shapefiles.zip?dl=0
+First, download and unzip the following shape files manually from this [website](http://www.mapcruzin.com/free-netherlands-arcgis-maps-shapefiles.htm):
+  
+  * Places
+  * Railways
 
-Second, create a clear and documented script that:
+Second, create a clear and documented script as part of a new Rstudio Project (set-up as descriped in lesson 3) that:
 
-- Reads in the rivers, centroids, counties shapefiles using the `rgdal` library 
-- Creates a map that visualises the rivers, counties, and centroids at once (hint use `plot(, add = TRUE)`)
-- Write the river file a kml files, to check where the river file is located by opening the kml in Google Earth
-- Create a buffer around the rivers file and check which centroids fall within the buffer.
+  * Selects the "industrial" (`type == "industrial"`) railways
+  * Buffers the "industrial" railways with a buffer of 1000m (hint: `gBuffer` with `byid=TRUE`)
+  * Find the place (i.e. a city) that `intersects` with this buffer.
+  * Create a `plot` that shows the buffer, the points, and the name of the city
+  * write down the name of the city and the `population` of that city as one comment at the end of the script.
+    
+Bonus (optional!): if you can also download and unzip this within the script.
 
-Third answer the questions as comments within the script:
-- Where are these files located?
-- 
+## Submit
 
+Put your project on your gitHub account as a new repository and send the clone url to me (Jan) by e-mail before monday (1030)
 
-```{r, eval=FALSE}
-ogrInfo(dsn, "nw-rivers")
-ogrInfo(dsn, "nw-centroids")
-ogrInfo(dsn, "nw-counties")
-```
-
-Questions: 
-
-- Where are these spatial vector objects geographically located?
-
-## Optional for bonus points
-
-- What needs to be done to derive a buffer around the rivers of 200m?
-
-# More info
+## More info
 
 About projections and code: https://www.nceas.ucsb.edu/scicomp/recipes/projections
-
-# References
