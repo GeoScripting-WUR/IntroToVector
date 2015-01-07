@@ -384,13 +384,19 @@ We learned about:
 
 # Excercise of today
 
-Create a clear and documented script that:
-
-- Downloads the following data set and unzips:
+First download and unzip the following "manually" files in your `data` directory:
 https://www.dropbox.com/s/w25dwfo7c8wuaxv/read-write-shapefiles.zip?dl=0
+
+Second, create a clear and documented script that:
+
 - Reads in the rivers, centroids, counties shapefiles using the `rgdal` library 
 - Creates a map that visualises the rivers, counties, and centroids at once (hint use `plot(, add = TRUE)`)
-- Write the river file a kml files, to check where the river file is located. 
+- Write the river file a kml files, to check where the river file is located by opening the kml in Google Earth
+- Create a buffer around the rivers file and check which centroids fall within the buffer.
+
+Third answer the questions as comments within the script:
+- Where are these files located?
+- 
 
 
 ```{r, eval=FALSE}
