@@ -1,0 +1,80 @@
+---
+title: "R for spatial vector data"
+author: "Loïc Dutrieux, Jan Verbesselt, Sytze de Bruijn"
+date: "01/05/2015"
+output: slidy_presentation
+---
+
+## Sp classes
+
+| Geometry      | class                     | attribute     |
+|-------------  |-----------------          |-------------  |
+| points        | *SpatialPoints*           | No            |
+| points        | *SpatialPointsDataFrame*  | data.frame   |
+| line          | *Line*                    | No           |
+| lines         | *Lines*                   | No           |
+| lines         | *SpatailLines*            | No           |
+| lines         | *SpatialLinesDataFrame*   | data.frame      |
+| rings         | *Polygon*                    | No           |
+| rings         | *Polygons*                   | No           |
+| rings         | *SpatailPolygons*            | No           |
+| rings         | *SpatialPolygonsDataFrame*   | data.frame   |
+
+
+---
+
+## Structure of a Spatial*DataFrame object
+
+```{r}
+library(sp)
+data(meuse)
+coordinates(meuse) = c("x", "y")
+str(meuse)
+```
+
+---
+
+## Structure of a Spatial*DataFrame object (2)
+
+* A SpatialPoints object
+    * Coordinates
+    * A coordinate reference system
+    * A spatial extent
+* A dataframe
+
+### Implications
+
+*Manipulating sp objects is very similar to data.frames manipulation*
+
+### Subsetting
+
+```{r}
+meuseClean <- meuse[!is.na(meuse$landuse),]
+meuseSub <- meuseClean[meuseClean$landuse == 'Ah',]
+```
+
+---
+
+```{r}
+plot(meuse, pch = 20, col = 'red')
+plot(meuseSub, pch = 20, col = 'green', add = TRUE)
+```
+
+---
+
+## Manipulating geometries
+
+**rgeos** package
+
+* `gBuffer()`: Create buffer around geometries
+* `gDistance()`: Distance between a set of *projected* points
+* `gDifference()`: Difference between 2 geometries
+* `gArea()`: Calculate area of given geometry
+* `gIntersection()`: Intersection between two geometries
+
+
+
+
+
+
+
