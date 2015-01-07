@@ -1,5 +1,5 @@
 ---
-title: 'Lesson 5: Introduction to the vector handling in R'
+title: "Lesson 5: Introduction to the vector handling in R"
 author: "Jan Verbesselt and Sytze de Bruyn"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
@@ -8,8 +8,6 @@ output:
     toc: yes
     toc_depth: 4
     number_sections: true
-  pdf_document:
-    toc: yes
 bibliography: refs.bib  
 ---
 
