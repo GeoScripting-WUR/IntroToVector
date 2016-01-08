@@ -1,18 +1,19 @@
 ---
-title: "Lesson 6: Introduction to the vector handling in R"
 author: "Jan Verbesselt, Sytze de Bruyn, Loïc Dutrieux, Valerio Avitabile"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  html_document:
-    css: custom.css
-    theme: united
-    toc: yes
-    toc_depth: 4
-    number_sections: true
-bibliography: refs.bib
+  knitrBootstrap::bootstrap_document:
+    title: "Week 3, Lesson 6: Intro to vector with R"
+    theme: cosmo
+    menu: FALSE
 ---
 
-# Today's items
+# [WUR Geoscripting](https://geoscripting-wur.github.io/) ![WUR logo](http://www.wageningenur.nl/upload/f9a0b5f2-15c5-4b84-9e14-20ef02f5e265_wur-logo.png)
+Authors: Jan Verbesselt, Sytze de Bruyn, Loïc Dutrieux, Valerio Avitabile
+
+`r format(Sys.time(), '%d %B, %Y')`
+
+# Week 3, Lesson 6: Intro to vector with R
 
 ## ToDo in the morning
 
@@ -397,12 +398,13 @@ Second, create a clear and documented script as part of a new Rstudio Project (s
   * Find the place (i.e. a city) that `intersects` with this buffer.
   * Create a `plot` that shows the buffer, the points, and the name of the city
   * write down the name of the city and the `population` of that city as one comment at the end of the script.
+  
+Think about project structure and use of git!
     
 Bonus (optional!): if you can also download and unzip this within the script.
 
 ## Submit
-
-Put your project on your gitHub account as a new repository and send the clone url to me (Jan) by e-mail before tommorow (1030)
+Put your project on your gitHub account as a new repository post the ***clone url*** in the forum before tommorow (1030)
 
 ## More info
 
