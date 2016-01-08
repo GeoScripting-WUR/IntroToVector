@@ -1,21 +1,22 @@
 ---
-title: "Lesson 5: Introduction to the vector handling in R"
+title: "Lesson 6: Introduction to the vector handling in R"
 author: "Jan Verbesselt, Sytze de Bruyn, Loïc Dutrieux, Valerio Avitabile"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
+    css: custom.css
     theme: united
     toc: yes
     toc_depth: 4
     number_sections: true
-bibliography: refs.bib  
+bibliography: refs.bib
 ---
 
 # Today's items
 
 ## ToDo in the morning
 
-Go through the whole lesson and try to answer the questions below. We will address the questions in the lesson and discuss.
+Go through the whole lesson and try to answer the questions below. We will address the questions in the lesson and discuss them.
 
 ## Objective of today
 
@@ -37,18 +38,18 @@ In today's lecture, we will explore the basics of handling spatial vector data i
 ## Some packages for working with spatial vector data in R
 
 The packages `sp` and `rgdal` are widely used throughout this course. 
-Both packages not only provide functionallity for raster data but also for vector data.
+Both packages not only provide functionality for raster data but also for vector data.
 The `sp` package provides classes for importing, manipulating and exporting spatial data in R, and methods 
 
 
 For example, `rgdal` includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as ESRI Shapefiles and kml. The OGR library is part of the widely used **Geospatial Data Abstraction Library** (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data.
-The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow acces from a variety of other languages including `R`, `Python` but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunaly, the `rgdal` package, providing GDAL bindings in R, is well documented with lot's of examples. The same is valid for the Python libaries.
+The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow access from a variety of other languages including `R` and `Python` but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunaly, the `rgdal` package, providing GDAL bindings in R, is well documented with lots of examples. The same is valid for the Python libaries.
 
-Similarly, `rgeos` is an interface to the powerful **Geometry Engine Open Source (GEOS)** library for all kind of operations on geometries (buffering, overlaying, area calculations, etc.).  
+Similarly, `rgeos` is an interface to the powerful **Geometry Engine Open Source (GEOS)** library for all kinds of operations on geometries (buffering, overlaying, area calculations, etc.).  
 
 Thus, functionality that you commonly find in expensive GIS software is also available within R, using free but very powerful software libaries. 
 
-The possiblities are huge; in this course we can only scratch the surface with some essentials which hopefully invite you to experiment further and use them in your research. Details can be found in the book Applied Spatial Data Analysis with R and several vignettes authored by Roger Bivand, Edzer Pebesma and Virgilio Gomez-Rubio. Owing to time constraints, this lecture cannot cover the related package `spacetime` with classes and methods for spatio-temporal data [@Bivand:2013ux].
+The possiblities are huge in this course we can only scratch the surface with some essentials which hopefully invite you to experiment further and use them in your research. Details can be found in the book Applied Spatial Data Analysis with R and several vignettes authored by Roger Bivand, Edzer Pebesma and Virgilio Gomez-Rubio. Owing to time constraints, this lecture cannot cover the related package `spacetime` with classes and methods for spatio-temporal data [@Bivand:2013ux].
 
 ## Creating and manipulating geometries
 
@@ -76,13 +77,13 @@ First, start Google Earth on your computer and make a note of the longitude and 
 ### Points: SpatialPoints, SpatialPointsDataFrame
 The example below shows how you can create spatial point objects from these coordinates. Type `?function name` (e.g. `?cbind`) for finding help on the functions used.
 
-*Question* See ?CRS and have a look at the help.
+**Question:** See ?CRS and have a look at the help.
 ```{r, message=FALSE}
-# load sp package
+# load the sp and rgdal packages
 library(sp)
 library(rgdal)
 
-# coordinates of two points identiefied in Google Earth, for example
+# coordinates of two points identified in Google Earth, for example:
 pnt1_xy <- cbind(5.6660, 51.9872)   # enter your own coordinates
 pnt2_xy <- cbind(5.6643, 51.9668)   # enter your own coordinates
 
@@ -148,7 +149,7 @@ SpatialLinesDataFrame but we have to go through some other classes.
 (mylinesdf <- SpatialLinesDataFrame(spatlines, line_data))
 ```
 
-*Q: What is the difference between Line and Lines?*
+**Question:** What is the difference between Line and Lines?
 ```{r, echo=FALSE, eval=FALSE}
 class(simple_line)
 class(lines_obj)
@@ -172,7 +173,7 @@ spplot(mylinesdf, col.regions = "blue",
 
 ### Writing and reading spatial vector data using OGR
 
-What now follows is a brief intermezzo before we continue with the classess for polygons. 
+What now follows is a brief intermezzo before we continue with the classes for polygons. 
 Let us first export the objects created as kml files that can be displayed in Google Earth. 
 We will use the `OGR` functionality available through the package `rgdal`.
 
@@ -225,7 +226,7 @@ Try to understand the above code and results. Feel free to display the data and 
 Transformations between coordinate systems are crucial to many GIS applications. 
 The **Keyhole Markup Language (kml)** used by Google Earth uses latitude and longitude in a polar WGS84 coordinate system (i.e. geographic coordinates). However, in some of the examples below we will use metric distances (i.e. carthographic coordinates).There are two types of coordinate systems that you need to recognise: **projected coordinate systems** and **unprojected coordinates systems**
 
-One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. Projected coordinates are coordinates that refer to a point on a two-dimensional map that *represents* the surface of the Earth (i.e. **projected coordinate system**).Latitude and Longitude values are an example of an **unprojected coordinate system**. These are coordinates that directly refer to a point on the Earth's surface. One way to deal with this is by transforming the data to a planar coordinate system. In `R` this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** (http://trac.osgeo.org/proj/), which are available in `rgdal`.  
+One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. Projected coordinates are coordinates that refer to a point on a two-dimensional map that *represents* the surface of the Earth (i.e. **projected coordinate system**). Latitude and Longitude values are an example of an **unprojected coordinate system**. These are coordinates that directly refer to a point on the Earth's surface. One way to deal with this is by transforming the data to a planar coordinate system. In `R` this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** (http://trac.osgeo.org/proj/), which are available in `rgdal`.  
 
 Central to spatial data in the `sp` package is that they have a coordinate reference system, which is coded in object of `CRS` class. Central to operations on different spatial data sets is that their coordinate reference system is compatible (i.e., identical). This CRS can be a character string describing a reference system in a way understood by the `PROJ.4` projection library, or a (character) missing value. An interface to the `PROJ.4` library is available only if the R package `rgdal` is present.
 
@@ -342,7 +343,7 @@ Try to understand how `spplot` works by breaking it down in simple steps e.g.
 spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"))
 ```
 
-**Question: **  Which plotting options do you prefer? E.g `spplot` or `plot`
+**Question:**  Which plotting options do you prefer? E.g `spplot` or `plot`
 
 #### Polygon operations with `rgeos` (buffer, intersect, difference)
 
@@ -369,8 +370,8 @@ print(paste("The difference in area =", round(100 * gArea(mydiff) /
 
 ```
 
-- **Question ** What happens if you change `quadsegs` to a higher number?
-- **Question ** Do you understand the script? What is the difference between `gIntersection` and `gDifference`?
+- **Question:** What happens if you change `quadsegs` to a higher number?
+- **Question:** Do you understand the script? What is the difference between `gIntersection` and `gDifference`?
 
 # Today's summary
 
@@ -389,7 +390,7 @@ First, download and unzip the following shape files manually from this [website]
   * Places
   * Railways
 
-Second, create a clear and documented script as part of a new Rstudio Project (set-up as descriped in lesson 3) that:
+Second, create a clear and documented script as part of a new Rstudio Project (set-up as descriped in lesson 4) that:
 
   * Selects the "industrial" (`type == "industrial"`) railways
   * Buffers the "industrial" railways with a buffer of 1000m (hint: `gBuffer` with `byid=TRUE`)
@@ -401,7 +402,7 @@ Bonus (optional!): if you can also download and unzip this within the script.
 
 ## Submit
 
-Put your project on your gitHub account as a new repository and send the clone url to me (Jan) by e-mail before monday (1030)
+Put your project on your gitHub account as a new repository and send the clone url to me (Jan) by e-mail before tommorow (1030)
 
 ## More info
 
