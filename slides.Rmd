@@ -1,6 +1,6 @@
 ---
 title: "R for spatial vector data"
-author: "Loïc Dutrieux, Jan Verbesselt, Sytze de Bruyn"
+author: "Loïc Dutrieux, Jan Verbesselt, Sytze de Bruyn, Benjamin Brede"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: slidy_presentation
 ---
