@@ -217,7 +217,10 @@ if (!file.exists(file.path("data","route.rda"))) {
 proj4string(myroute) <- prj_string_WGS
 names(myroute)
 myroute$Description <- NULL # delete Description
-mylinesdf <- rbind(mylinesdf, myroute)
+# mylinesdf <- rbind(mylinesdf, myroute)
+# note some problems were report with this step see Q&A
+mylinesdf <-  rbind.SpatialLines(mylinesdf, myroute)
+
 ```
 
 Try to understand the above code and results. Feel free to display the data and export to Google Earth.
