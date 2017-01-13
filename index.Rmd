@@ -407,7 +407,7 @@ Think about project structure and use of git!
 Bonus (optional!): if you can also download and unzip this within the script.
 
 ## Submit
-Put your project on your GitHub account as a new repository post the **clone url** in the forum before tommorow (10:30)
+Put your project on your GitHub account as a new repository post the **clone url** in the forum before tommorow!
 
 ## More info
 
