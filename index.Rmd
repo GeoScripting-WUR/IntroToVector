@@ -1,5 +1,5 @@
 ---
-author: "Jan Verbesselt, Sytze de Bruyn, Loïc Dutrieux, Valerio Avitabile, Dainius Masiliunas"
+author: "Jan Verbesselt, Sytze de Bruyn, Loïc Dutrieux, Valerio Avitabile, Dainius Masiliunas, David Swinkels"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   knitrBootstrap::bootstrap_document:
@@ -9,7 +9,7 @@ output:
 ---
 
 # [WUR Geoscripting](https://geoscripting-wur.github.io/) ![WUR logo](http://www.wageningenur.nl/upload/f9a0b5f2-15c5-4b84-9e14-20ef02f5e265_wur-logo.png)
-Authors: Jan Verbesselt, Sytze de Bruyn, Loïc Dutrieux, Valerio Avitabile, Dainius Masiliunas
+Authors: Jan Verbesselt, Sytze de Bruyn, Loïc Dutrieux, Valerio Avitabile, Dainius Masiliunas, David Swinkels
 
 `r format(Sys.time(), '%d %B, %Y')`
 
@@ -25,215 +25,280 @@ Learn how to handle vector data
 
 ## Learning outcomes of today:
 
-In today's lecture, we will explore the basics of handling spatial vector data in R. There are several R packages for this purpose but we will focus on using `sp`, `rgdal`, `rgeos` and some related packages. At the end of the lecture, you should be able to:
+In today's lecture, we will explore the basics of handling spatial vector data in R. There are several R packages for this purpose but we will focus on using `sf` and some related packages. At the end of the lecture, you should be able to:
 
   - create point, line and polygon objects from scratch;
-  - explore the structure of `sp` classes for spatial vector data;
+  - explore the structure of `sf` classes for spatial vector data;
   - plot spatial vector data;
   - transform between datums and map projections; 
+  - write and read spatial vector formats (e.g. kml, geoJSON, shapefile);
   - apply basic operations on vector data, such as buffering, intersection and area calculation;
-  - write spatial vector data to a kml file;
+
 
 # Vector R basics
 
 ## Some packages for working with spatial vector data in R
 
-The packages *sp* and *rgdal* are widely used throughout this course. 
-Both packages not only provide functionality for raster data but also for vector data.
+In this tutorial we will use the *sf* package. It is a  spatial vector data package, that builds on top of *sp*, *rgdal* and *rgeos* packages. The packages *sp* and *rgdal* are widely used throughout this course. Both packages not only provide functionality for vector data but also for raster data. 
 
-The *sp* package provides classes for importing, manipulating and exporting spatial data in R, and methods for doing so. It is often the foundation for other spatial packages, such as *raster*.
+The *sf* package focuses solely on vector data. It provides a standardized encoding of vector data and uses GDAL to read and write data, GEOS for geometrical operations and Proj.4 for projection conversions and datum transformations.
 
-The *rgdal* package includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as ESRI Shapefiles and kml. The OGR library is part of the widely used **Geospatial Data Abstraction Library** (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data.
-The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow access from a variety of other languages including *R* and *Python* but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunately, the *rgdal* package, providing GDAL bindings in R, is also well documented with lots of examples. The same is valid for the Python libaries.
+The *sp* package provides classes for importing, manipulating and exporting spatial data in R, and methods for doing so. It is often the foundation for other spatial packages, such as raster.
+
+The *rgdal* package includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as ESRI Shapefiles, geojson and kml. The OGR library is part of the widely used **Geospatial Data Abstraction Library** (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data.
+The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow access from a variety of other languages including *R* and *Python* but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunately, the *sf* package, providing GDAL bindings in R, is also well documented with lots of examples. The same is valid for the Python libaries.
 
 Similarly, *rgeos* is an interface to the powerful **Geometry Engine Open Source (GEOS)** library for all kinds of operations on geometries (buffering, overlaying, area calculations, etc.).  
 
 Thus, functionality that you commonly find in expensive GIS software is also available within R, using free but very powerful software libaries. 
 
-The possiblities are huge. In this course we can only scratch the surface with some essentials, which hopefully invite you to experiment further and use them in your research. Details can be found in the book *Applied Spatial Data Analysis with R* and several vignettes authored by Roger Bivand, Edzer Pebesma and Virgilio Gomez-Rubio. Owing to time constraints, this lecture cannot cover the related package *spacetime* with classes and methods for spatio-temporal data [@Bivand:2013ux].
+The possiblities are huge. In this course we can only scratch the surface with some essentials, which hopefully invite you to experiment further and use them in your research. Details can be found in the book *Applied Spatial Data Analysis with R* and several vignettes authored by Roger Bivand, Edzer Pebesma and Virgilio Gomez-Rubio.
 
 ## Creating and manipulating geometries
 
-The package *sp* provides classes for spatial-only geometries, such as `SpatialPoints` (for points), and combinations of geometries and attribute data, such as a `SpatialPointsDataFrame`. The following data classes are available for spatial vector data [@Edzer:2005ux]:
+The package *sf* has geometry types, such as `point` (for one point), `linestring` (for one line) and `polygon` (for one polygon). For sets of spatial classes it has the `multipoint` (multiple points), `multilinestring`, `multipolygon` and `geometrycollection`. The geometry collection data class allows to have mixed geometries in one object. The package *sf* has even more special geometry types [(check here)](https://cran.r-project.org/web/packages/sf/vignettes/sf1.html). The most common geometry types for spatial vector data are shown below:
 
-| Geometry      | class                     | attribute     |
-|-------------  |-----------------          |-------------  |
-| points        | *SpatialPoints*           | No            |
-| points        | *SpatialPointsDataFrame*  | data.frame   |
-| line          | *Line*                    | No           |
-| lines         | *Lines*                   | No           |
-| lines         | *SpatialLines*            | No           |
-| lines         | *SpatialLinesDataFrame*   | data.frame      |
-| rings         | *Polygon*                    | No           |
-| rings         | *Polygons*                   | No           |
-| rings         | *SpatialPolygons*            | No           |
-| rings         | *SpatialPolygonsDataFrame*   | data.frame   |
+| Geometry      | type                      | description               |
+|-------------  |-----------------          |-------------              |
+| point         | *POINT*                   | single point ; zero-dimensional geometry  |
+| points        | *MULTIPOINT*              | set of points |
+| line          | *LINESTRING*              | sequence of points connected by straight, non-self intersecting line pieces; one-dimensional geometry         |
+| lines         | *MULTILINESTRING*         | set of linestrings    |
+| rings         | *POLYGON*                 | sequence of points form a closed, non-self intersecting ring; the first ring denotes the exterior ring, zero or more subsequent rings denote holes in this exterior ring; geometry with a positive area (two-dimensional);         |
+| rings         | *MULTIPOLYGON*            | set of polygons          |
+| mix           | *GEOMETRYCOLLECTION*      | set of geometries of any type except GEOMETRYCOLLECTION           |
 
-Table:  Overview of *sp* package spatial-only geometry classes.
+Table:  Overview of *sf* package geometry types.
 
-We will go through a few examples of creating geometries from scratch to familiarize yourself with these classes.
+Simple feature objects are stored in data classes. 
+Three data classes are used in *sf* to represent features:
 
-First, start Google Earth on your computer and make a note of the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point. To change the settings in Google Earth click *Tools | Options* and change the *Show Lat/Long* setting on the *3D View* Tab. 
+  - simple feature geometry (sfg): the feature geometry of an individual simple feature;
+  - simple feature collections (sfc): a list or collection of simple feature geometries;
+  - simple features (sf): simple feature collections linked to a data.frame with feature attributes;
 
-### Points: SpatialPoints, SpatialPointsDataFrame
-The example below shows how you can create spatial point objects from these coordinates. Type `?function name` (e.g. `?cbind`) for finding help on the functions used.
 
-**Question 1:** See `?CRS` and have a look at the help.
+
+We will go through a few examples of creating geometries from scratch to familiarize yourself with these geometry types and data classes.
+
+First, go to [Google Maps](https://www.google.nl/maps/?hl=en) on your computer and make a note of the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point.
+
+**Question 1:** In what coordinate reference system [crs] are your points from google maps? What is the EPSG belonging to that crs?
+
+### Points
+The example below shows how you can create spatial point objects from these coordinates. Type `?function name` (e.g. `?st_point`) for finding help on the functions used.
+
 ```{r, message=FALSE}
-## Load the sp and rgdal packages
-library(sp)
-library(rgdal)
+## Load the sf package
+library(sf)
 
-## Coordinates of two points identified in Google Earth, for example:
-pnt1_xy <- cbind(5.6660, 51.9872)   # enter your own coordinates
-pnt2_xy <- cbind(5.6643, 51.9668)   # enter your own coordinates
+## Create two simple feature geometry points
+## Get coordinates of two points identified in Google Maps, for example:
+point1_sfg <- st_point(c(5.664190, 51.993843))  # enter your own lat/long
+point2_sfg <- st_point(c(5.673310, 51.982752))   # enter your own lat/long
 
-## Combine coordinates in single matrix
-coords <- rbind(pnt1_xy, pnt2_xy)
+## Combine point features into simple feature collection with CRS: mypoints_sfc
+mypoints_sfc <- st_sfc(point1_sfg, point2_sfg, crs = 4326) 
+mypoints_sfc_wgs <- st_sfc(point1_sfg, point2_sfg, crs = "+proj=longlat +datum=WGS84 +no_defs")
+# These two functions do the same. Which one do you like more?
 
-## Make spatial points object
-prj_string_WGS <- CRS("+proj=longlat +datum=WGS84")
-mypoints <- SpatialPoints(coords, proj4string=prj_string_WGS)
+## Are they identical?
+identical(mypoints_sfc, mypoints_sfc_wgs)
 ```
 
-```{r eval=FALSE}
-## Inspect object
-class(mypoints)
-str(mypoints)
+```{r, eval=FALSE}
+## Inspect the data class and geometry types of your objects
+point1_sfg
+class(point1_sfg)
+
+mypoints_sfc
+class(mypoints_sfc)
 ```
 
 ```{r, eval=TRUE}
 ## Create and display some attribute data and store in a data frame
-mydata <- data.frame(cbind(id = c(1,2), 
-                Name = c("my first point", 
-                         "my second point")))
+mydata <- data.frame(cbind(
+    id = c(1,2), 
+    name = c("my first point","my second point")))
+mydata
 
-## Make spatial points data frame
-mypointsdf <- SpatialPointsDataFrame(
-  coords, data = mydata, 
-  proj4string=prj_string_WGS)
+## Combine simple feature collection and dataframe to create simple feature: mypoints_sf
+mypoints_sf <- st_set_geometry(mydata, mypoints_sfc)
+
 ```
 
 ```{r, eval=FALSE}
-class(mypointsdf) # Inspect and plot object
-names(mypointsdf)
-str(mypointsdf)
+mypoints_sf
+class(mypoints_sf) # notice how simple features are two classes
+class(mypoints_sf) == "data.frame"
+```
+
+**Question 2:** What is the the difference between the objects `mypoints_sfc` and `mypoints_sf`?
+
+
+```{r, eval=TRUE}
+## When plotting a simple feature it makes a plot for every column
+## Plot only the name column
+plot(mypoints_sf[,"name"], col = c("orange","blue"))
 ```
 
 ```{r, eval=TRUE}
-spplot(mypointsdf, zcol="Name", col.regions = c("red", "blue"), 
-       xlim = bbox(mypointsdf)[1, ]+c(-0.01,0.01), 
-       ylim = bbox(mypointsdf)[2, ]+c(-0.01,0.01),
-       scales= list(draw = TRUE))
+## We can make nicer plots with the ggplot package
+## Simple feature objects work with other packages (such as ggplot2 and mapview)
+library(ggplot2)
+ggplot(data = mypoints_sf) + geom_sf(aes(color = name))
 ```
-
-```{r, eval=FALSE}
-## Play with the spplot function!
-## What is needed to make the following work?
-spplot(mypointsdf, col.regions = c(1,2))
-```
-
-**Question 2:** What is the the difference between the objects `mypoints` and `mypointsdf`?
 
 ### Lines
 
-Now let us connect the two points by a straight line. First find information on 
-the classes for lines that are available in *sp*. The goal is to create 
-`SpatialLinesDataFrame` but we have to go through some other classes.
+Now let us connect the two points by a straight line. Consult how to make a line: ?st_linestring
 
 ```{r}
-## Consult help on SpatialLines class
-(simple_line <- Line(coords))
-(lines_obj <- Lines(list(simple_line), "1"))
-(spatlines <- SpatialLines(list(lines_obj), proj4string=prj_string_WGS))
-(line_data <- data.frame(Name = "straight line", row.names="1"))
-(mylinesdf <- SpatialLinesDataFrame(spatlines, line_data))
-```
-
-**Question 3:** What is the difference between `Line` and `Lines`?
-```{r, echo=FALSE, eval=FALSE}
-class(simple_line)
-class(lines_obj)
+## Now make the line by creating a matrix and linestring
+points_matrix <- rbind(point1_sfg, point2_sfg) # Create matrix
+myline_sfg <- st_linestring(points_matrix) # Create sfg
+myline_sfc <- st_sfc(myline_sfg, crs = 4326) # Create sfc
 ```
 
 ```{r, eval=FALSE}
-class(mylinesdf)
-str(mylinesdf)
+## Check the class and structure of the objects again.
+class(points_matrix)
+class(myline_sfg)
+class(myline_sfc)
+myline_sfc
+```
+
+```{r}
+## Add feature attributes by giving the line an id and a name
+myline_df <- data.frame(id = 1, name = "Straight line") # Create data.frame
+myline_sf <- st_set_geometry(myline_df, myline_sfc) #Create sf
+```
+
+
+```{r, eval=FALSE}
+## Check class and geometry type
+class(myline_df)
+class(myline_sf)
+myline_sf
 ```
 
 ```{r, fig.height=6, fig.width=12}
-spplot(mylinesdf, col.regions = "blue", 
-       xlim = bbox(mypointsdf)[1, ]+c(-0.01,0.01), 
-       ylim = bbox(mypointsdf)[2, ]+c(-0.01,0.01),
-       scales= list(draw = TRUE))
+plot(myline_sf[1], main = myline_sf$name, col = "red", lwd = 3, lty = 5, graticule = TRUE, xlab = "latitude", ylab = "longitude", axes = TRUE)
 ```
 
-*Try to understand the above code and its results by studying help.*
+*Try to understand the above code and its results by studying help: ?plot_sf*
 
 *Try to add the points together with the lines on the same map.*
 
 
-### Writing and reading spatial vector data using OGR
+### Writing and reading spatial vector data
 
 What now follows is a brief intermezzo before we continue with the classes for polygons. 
-Let us first export the objects created as KML files that can be displayed in Google Earth. 
-We will use the OGR functionality available through the package *rgdal*.
+We will use the OGR functionality of gdal available through the package *sf*.
 
-```{r, eval=FALSE, echo=TRUE}
-library(rgdal)
-## Write to KML; below we assume a subdirectory data within the current 
-#  working directory.
+```{r}
+## Create subdirectory data within current working directory
+#getwd() #if needed
+#setwd() 
 dir.create("data", showWarnings = FALSE) 
-writeOGR(mypointsdf, file.path("data","mypointsGE.kml"), 
-       "mypointsGE", driver="KML", overwrite_layer=TRUE)
-writeOGR(mylinesdf, file.path("data","mylinesGE.kml"), 
-       "mylinesGE", driver="KML", overwrite_layer=TRUE)
+
+## Write to KML
+st_write(obj = mypoints_sf, dsn = "./data/mypoints.kml")
+st_write(obj = myline_sf, dsn = "./data/myline.kml")
 
 ```
+The function `st_write` requires entries for the arguments `obj` (object of class sf) and `dsn` (data source name). The function detects what driver it needs based on the file extension of the dsn. Please study details in the help file: ?st_write.
+Similarly the function `st_read` allows reading OGR compatible data into a suitable simple feature object. 
 
-Check (in Google Earth) whether the attribute data were written to the KML output.
+Check (in Google Maps) whether the attribute data were written correctly to the KML output (use [My Maps](https://www.google.com/maps/about/mymaps/) from Google). You need to be logged in on your google account, go to [My Maps](https://www.google.com/maps/about/mymaps/), click `get started`, click the `+` button to create a new digital map. On the untitled layer click `import`, import the mypoints.kml, add a new layer and import myline.kml. Cool! You just created a webmap with your point and line features. 
 
-The function `readOGR` allows reading OGR compatible data into a suitable Spatial vector object. 
-Similar to `writeOGR`, the function requires entries for the arguments `dsn` (data source name) and `layer` (layer name). The interpretation of these enties vary by driver. Please study details in the help file.
+Now let us see if we can create a line in the webmap and import it to R. Digitize a route (e.g. a walk) between two points of interest in Wageningen: click on the `draw a line` symbol (between the place marker and the direction symbol), click `Add walking route`, draw your route in Wageningen and name the new layer `route`. Click on the main menu in the left panel (top ... symbol), click `export to kml`, click `export to .KML file`, select your route layer and download the kml (check [here](https://support.google.com/mymaps/answer/3109452?hl=en) how to export). Save the kml in the data folder within the working directory under the name `route.kml`. We will read this file into a simple features object.
 
-Digitize a path (e.g. a bicycle route) between the two points of interest you selected earlier in Google Earth. This can be achieved using the *Add Path* functionality of Google Earth (see [here](https://support.google.com/earth/answer/148072?hl=en) for more info). Save the path in the data folder within the working directory under the name `route.kml`. We will read this file into a spatial lines object and add it to the already existing `SpatialLinesDataFrame` object.
-
-```{r, eval=FALSE}
-dsn = file.path("data","route.kml")
-ogrListLayers(dsn) # To find out what the layers are
-myroute <- readOGR(dsn, layer = ogrListLayers(dsn))
-```
-
-```{r, eval=TRUE, echo=FALSE}
-if (!file.exists(file.path("data","route.rda"))) {
-  myroute <- readOGR(file.path("data","route.kml"), ogrListLayers(dsn))
-  save(myroute, file = file.path("data","route.rda"), compress="xz")
-} else {
-  load(file.path("data","route.rda"))
-}
+```{r, echo = FALSE}
+## Read the kml as a simple feature
+myroute <- st_read(dsn = "./data/route.kml") 
 ```
 
 ```{r}
-## Put both in single data frame
-proj4string(myroute) <- prj_string_WGS
+myroute #What is the geometry type of objects? 
 names(myroute)
-myroute$Description <- NULL # delete Description
-# mylinesdf <- rbind(mylinesdf, myroute)
-# Note: some problems were reported with this step, see Q&A
-mylinesdf <-  rbind.SpatialLines(mylinesdf, myroute)
-
+myroute = myroute[,"Name"] # Select name column only
+plot(myroute) # What geometry types do you see?
 ```
 
-Try to understand the above code and results. Feel free to display the data and export to Google Earth.
+Now we have the data, but some of our friends want this exact data too. One friend of ours is a software engineer and he wants a geoJSON. Another friend is a GIS-developer and he prefers a shapefile. Let's try to give them the files in those formats!
+
+```{r, eval=TRUE}
+## Try to export the simple feature to a geoJSON. What happens?
+try(st_write(myroute, dsn = "./data/route.geojson"))
+```
+
+Okay succes! Let us continue with the shapefile.
+
+```{r, message=FALSE, warning=TRUE}
+## Again export to a shapefile. What happens now?
+try(st_write(myroute, dsn = "./data/route.shp"))
+```
+
+Writing the myroute object to a shapefile works only for linestring, but not for the points. Shapefiles do not handle multiple geometry types well. We can solve this! Have a look at ?st_is 
+
+```{r, eval=TRUE}
+## Select linestring route
+myroute_line <- myroute[st_is(myroute, type = "LINESTRING"),]
+
+## Select start and end point route
+myroute_points <- myroute[st_is(myroute, type = "POINT"),]
+```
+
+```{r, eval=TRUE, message=FALSE, warning=TRUE}
+## Let us try to write the simple features to a shapefile
+try(st_write(myroute_line, dsn = "./data/route_line.shp"))
+try(st_write(myroute_points, dsn = "./data/route_points.shp"))
+```
+
+We run into another issue; suddenly shapefiles do not support 3D line strings and points. We have fixed the geometry type, but now need to work on the dimensions of the data. Let us look into dimensions. 
+
+## Dimensions
+
+All geometries are composed of points. Points are coordinates in a 2-, 3- or 4-dimensional space. All points in a geometry have the same dimensionality. In addition to X and Y coordinates, there are two optional additional dimensions:
+
+- a Z coordinate, denoting altitude
+- a M coordinate (rarely used), denoting a measure that is associated with the point; examples could be time of measurement, or measurement error of the coordinates
+
+The four possible cases are:
+1. two-dimensional points refer to x and y, easting and northing, or longitude and latitude, we refer to them as XY
+2. three-dimensional points as XYZ
+3. three-dimensional points as XYM
+4. four-dimensional points as XYZM (the third axis is Z, fourth M)
+
+So we need to find a function that changes dimensions. Have a look at ?st_zm
+
+```{r, eval=TRUE}
+## Convert XYZ dimension to XY dimension
+myroute_points_xy <- st_zm(myroute_points)
+myroute_line_xy <- st_zm(myroute_line)
+
+## Check your geometry type and dimension. Are they point/linestring and XY?
+myroute_points_xy
+myroute_line_xy
+```
+
+```{r, eval=TRUE, message = FALSE}
+## Try to export the simple feature to a shapefile 
+try(st_write(myroute_points_xy, dsn = "./data/route_points.shp"))
+try((st_write(myroute_line_xy, dsn = "./data/route.shp", delete_layer = TRUE))) #Overwrite your previous shapefile by adding delete_layer = TRUE
+```
+
+Hooray, it worked! Now our friends have the data they wanted. Try to understand the above code and results. Feel free to display the data and visualize in Qgis.
 
 ### Transformation of coordinate system
 
 Transformations between coordinate systems are crucial to many GIS applications. 
 The **Keyhole Markup Language (kml)** used by Google Earth uses latitude and longitude in a polar WGS84 coordinate system (i.e. geographic coordinates). However, in some of the examples below we will use metric distances (i.e. carthographic coordinates).There are two types of coordinate systems that you need to recognise: **projected coordinate systems** and **unprojected coordinates systems**
 
-One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. Projected coordinates are coordinates that refer to a point on a two-dimensional map that *represents* the surface of the Earth (i.e. **projected coordinate system**). Latitude and Longitude values are an example of an **unprojected coordinate system**. These are coordinates that directly refer to a point on the Earth's surface. One way to deal with this is by transforming the data to a planar coordinate system. In `R` this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** ([http://trac.osgeo.org/proj/](http://trac.osgeo.org/proj/)), which are available in *rgdal*.  
+One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. Projected coordinates are coordinates that refer to a point on a two-dimensional map that *represents* the surface of the Earth (i.e. **projected coordinate system**). Latitude and Longitude values are an example of an **unprojected coordinate system**. These are coordinates that directly refer to a point on the Earth's surface. One way to deal with this is by transforming the data to a planar coordinate system. In `R` this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** ([http://trac.osgeo.org/proj/](http://trac.osgeo.org/proj/)), which are available in *sf*.  
 
-Central to spatial data in the *sp* package is that they have a coordinate reference system, which is coded in object of `CRS` class. Central to operations on different spatial data sets is that their coordinate reference system is compatible (i.e., identical). This CRS can be a character string describing a reference system in a way understood by the *PROJ.4* projection library, or a (character) missing value. An interface to the *PROJ.4* library is available only if the R package `rgdal` is present.
+Central to spatial data in the *sf* package is that they have a coordinate reference system, which is coded as a numeric epsg code and a character string describing the projection by the *PROJ.4* projection library. Operations on different spatial data sets need to have compatible coordinate reference systems (i.e., identical). An interface to the *PROJ.4* library is available through the *sf* package.
 
 We will transform our spatial data to the Dutch grid (Rijksdriehoekstelsel), often referred to as RD.
 Please note that: 
@@ -245,147 +310,170 @@ Please note that:
 
 ```{r}
 ## Define CRS object for RD projection
-prj_string_RD <- CRS("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +units=m +no_defs")
+# See how the transformation from unprojected wgs84 is defined to a projected coordinate system
+prj_string_RD <- st_crs("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +units=m +no_defs")
 
 ## Perform the coordinate transformation from WGS84 to RD
-mylinesRD <- spTransform(mylinesdf, prj_string_RD)
+myroute_rd_string <- st_transform(myroute_line_xy, crs = prj_string_RD)
+
+# Instead of having to define the projection ourselves, we can make use of the projection library by using an EPSG code
+myroute_rd_num <- st_transform(myroute_line_xy, crs = 28992)
+myroute_points_rd <- st_transform(myroute_points_xy, crs = 28992)
+
+# Check if your transformed routes are the same
+identical(myroute_rd_string, myroute_rd_num)
 ```
+**Question 3:** Why are your routes not identical? Hint: inspect the data
 
-You can always plot the line using the basic plot command:
+After transforming the line, plot the line using the basic plot command.
 
-```{r plotmylinesRD, fig.width=3, fig.height=3, message=TRUE, eval=TRUE, fig.align='center',strip.white=TRUE}
-plot(mylinesRD, col = c("red", "blue"))
+```{r plotmyroute_rd_num, fig.width=3, fig.height=3, message=TRUE, eval=TRUE, fig.align='center',strip.white=TRUE}
+plot(myroute_rd_num , main = myroute_rd_num$name, col = "red")
 box()
 ```
 
-Now that the geometries are projected to a planar coordinate system, 
-the length can be computed using a function from the package *rgeos*.
+Now that the geometries are projected to a planar coordinate system, the length can be computed.
+
+```{r}
+## Let us use different methods to calculate the distance between the two points
+
+## Network distance: wgs84, rd_new
+(dist_route_wgs84 = st_length(myroute_line_xy)) # line with WGS84 crs
+(dist_route_rdnew = st_length(myroute_rd_num)) # line with RD_new crs
+
+## Euclidean distance: wgs84, rd_new
+(dist_points_wgs = st_distance(myroute_points_xy)[1,2])# Get data from matrix position [1, 2]
+(dist_points_rd = st_distance(myroute_points_rd)[1,2]) 
+```
+Okay as expected the network distance is bigger than than a straight line between the two points, but a question remains:
+
+**Question 4:** Why does the distance slightly differ between objects with crs wgs_84 and rd_new? 
+
+Now we know the network and euclidean distance between the two points. As you might have noticed the st_length() and st_distance() functions gave a unit behind the number. It was a meter in our case, but maybe we want to know how many feet or inch the distance was. The *sf* package allows unit conversions by binding with the *units* package.
 
 ```{r, eval=TRUE}
-## Use rgeos for computing the length of lines 
-library(rgeos)
-(mylinesdf$length <- gLength(mylinesRD, byid=T))
+units::set_units(dist_points_rd , feet)
+units::set_units(dist_points_rd , inch)
+units::set_units(dist_points_rd , km)
 ```
-
-Feel free to export the updated lines to Google Earth or to inspect the contents of the `data` slot of the object `mylinesdf`:
-
-```{r, eval=FALSE}
-mylinesdf@data
-# or
-data.frame(mylinesdf)
-```
-
 
 ### Polygons
 
-#### Polygons with the *sp* package
-We now continue with *sp* classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around the points you defined earlier.
+#### Polygons with the *sf* package
+After the intermezzo, we now continue with *sf* classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around our points.
 
-```{r circlepoly, eval=TRUE}
-## Perform the coordinate transformation from WGS84 (i.e. not a projection) to RD (projected)"
-#  This step is necessary to be able to measure objectives in 2D (e.g. meters)
-(mypointsRD <- spTransform(mypointsdf, prj_string_RD))
-pnt1_rd <- coordinates(mypointsRD)[1,]
-pnt2_rd <- coordinates(mypointsRD)[2,]
+```{r, eval=TRUE}
+## Create sfg points from your route, which was converted to rd_new
+#  We need to have projected (RD_new) data to be able to measure features in 2D (e.g. meters)
+
+pnt1_rd <- myroute_points_rd$geometry[[1]]
+pnt2_rd <- myroute_points_rd$geometry[[2]]
 
 ## Make circles around points, with radius equal to distance between points
 ## Define a series of angles going from 0 to 2pi
 ang <- pi*0:200/100
-circle1x <- pnt1_rd[1] + cos(ang) * mylinesdf$length[1]
-circle1y <- pnt1_rd[2] + sin(ang) * mylinesdf$length[1]
-circle2x <- pnt2_rd[1] + cos(ang) * mylinesdf$length[1]
-circle2y <- pnt2_rd[2] + sin(ang) * mylinesdf$length[1] 
+circle1x <- pnt1_rd[1]+ cos(ang) * as.double(dist_points_rd) # distance needs to be converted from units m class to double class
+circle1y <- pnt1_rd[2] + sin(ang) * as.double(dist_points_rd)
+circle2x <- pnt2_rd[1]+ cos(ang) * as.double(dist_points_rd)
+circle2y <- pnt2_rd[2] + sin(ang) * as.double(dist_points_rd)
 c1 <- cbind(circle1x, circle1y)
 c2 <- cbind(circle2x, circle2y)
+
 ```
 
-You can plot everything again using basic R plot commands:
+You can plot these points using basic R plot commands:
 
-```{r plotcircle, fig.width=4, fig.height=6, message=TRUE, eval=TRUE, fig.align='center'}
-plot(c2, pch = 19, cex = 0.2, col = "red", ylim = range(circle1y, circle2y))
-points(c1, pch = 19, cex = 0.2, col = "blue")
-points(mypointsRD, pch = 3, col= "darkgreen")
+```{r, fig.width=4, fig.height=6, message=TRUE, eval=TRUE, fig.align='center'}
+plot(c1, pch = 19, cex = 0.2, col = "red", ylim = range(circle1y, circle2y), xlim = range(circle1x, circle2x))
+points(c2, pch = 19, cex = 0.2, col = "blue")
+plot(myroute_points_rd, pch = 3, col= "darkgreen", add = TRUE)
 ```
+See how we calculated a circle around every point. Although it looks like a closed ring, the visualized circle is not a polygon. Let's try to create a circular polygon. As before we step through the process of creating a simple feature:
 
-Now, we create subsequently
+- `Simple feature geometry (sfg)`
+- `Simple feature collections (sfc)`
+- `Dataframe (df)`
+- `Simple features (sf)`
 
-- `Polygons`
-- `SpatialPolygons`
-- `SpatialPolygonsDataFrame`
 
 ```{r}
-## Iterate through some steps to create SpatialPolygonsDataFrame object
-circle1 <- Polygons(list(Polygon(cbind(circle1x, circle1y))),"1")
-circle2 <- Polygons(list(Polygon(cbind(circle2x, circle2y))),"2")
-spcircles <- SpatialPolygons(list(circle1, circle2), proj4string=prj_string_RD)
-circledat <- data.frame(mypointsRD@data, row.names=c("1", "2"))
-circlesdf <- SpatialPolygonsDataFrame(spcircles, circledat)
+## Bind columns together into matrix and create a list of matrix
+# ?cbind combines columns and ?rbind combines rows
+circle1_sfg <- st_polygon(list(cbind(circle1x, circle1y)))
+circle2_sfg <- st_polygon(list(cbind(circle2x, circle2y)))
+
+circles_sfc <- st_sfc(circle1_sfg, circle2_sfg, crs = 28992)
+
+circles_df <- data.frame(name = c("circle1", "circle2"), row.names=c("1", "2"))
+circles_sf <- st_set_geometry(circles_df, circles_sfc)
 ```
 
-Similar results can be obtained using the function gBuffer of the package rgeos, as demonstrated below. Notice the use of two overlay functions from the package *rgeos*.
+```{r}
+## Plot the circle
+plot(circles_sf)
+```
 
-The final results can be plotted using basic R plotting commands:
+
+
+#### Polygon operations with *sf* (buffer, intersect, difference)
+
+Just now we calculated the points of the circle to obtain a perfect circle and then made it into a polygon, but we can also create a circular polygon by using the function st_buffer(). 
+
+The *sf* package can do more spatial operations by spatially selecting certain features and changing the geometry. Examples of spatial selections are st_intersects, st_contains, st_within, st_covers etc. 
+
+The package can change geometries of features with st_difference (clip), st_intersection (intersect), st_union, st_sym_difference, st_centroid, st_segmentize, st_convex_hull and st_buffer. More methods can be found with the command: methods(class = "sf")
+
+The final results of st_buffer can be plotted using basic R plotting commands:
 
 ```{r, fig.height=6, fig.width=4, fig.cap="plot example of final results", fig.align='center'}
-plot(circlesdf, col = c("gray60", "gray40"))
-plot(mypointsRD, add = TRUE, col="red", pch=19, cex=1.5)
-plot(mylinesRD, add = TRUE, col = c("green", "yellow"), lwd=1.5)
+## Buffer and plot
+point_buff <- st_buffer(myroute_points_rd, dist = dist_points_rd)
+
+plot(point_buff, col = c("#2b8cbe", "#31a354"), lwd = 2)
+plot(myroute_points_rd, add = TRUE, col="red", pch=19, cex=1.5)
 box()
 ```
 
-Here is an example of a plot of the results which employs a few more advanced options of `spplot`.
 
-```{r spplotresult, fig.height=6, fig.width=4, fig.cap="spplot example", fig.align='center'}
-spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"), 
-       sp.layout=list(list("sp.points", mypointsRD, col="red", pch=19, cex=1.5), 
-                      list("sp.lines", mylinesRD, lwd=1.5)))
-```
-
-Try to understand how `spplot` works by breaking it down in simple steps e.g.
-
-```{r, eval=FALSE}
-spplot(circlesdf, zcol="Name", col.regions=c("gray60", "gray40"))
-```
-
-**Question 4:**  Which plotting options do you prefer? E.g `spplot` or `plot`?
-
-#### Polygon operations with *rgeos* (buffer, intersect, difference)
 
 ```{r buffering, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
-library(rgeos)
-## Expand the given geometry to include the area within the specified width with specific styling options
-buffpoint <- gBuffer(mypointsRD[1,], width=mylinesdf$length[1], quadsegs=2)
-mydiff <- gDifference(circlesdf[1,], buffpoint)
-
-plot(circlesdf[1,], col = "red")
-plot(buffpoint, add = TRUE, lty = 3, lwd = 2, col = "blue")
-
-gArea(mydiff) ## what is the area of the difference?
-
-plot(mydiff, col = "red")
-
-myintersection <- gIntersection(circlesdf[1,], buffpoint)
-
-plot(myintersection, col="blue")
-
-gArea(myintersection)
-print(paste("The difference in area =", round(100 * gArea(mydiff) / 
-                                             gArea(myintersection),2), "%"))
-
+## Buffer again with the nquadsegs option. See the difference?
+buff_point <- st_buffer(myroute_points_rd[1,],  dist=dist_points_rd, nQuadSegs=2)
+mydiff <- st_difference(circles_sfc[1], buff_point)
+plot(circles_sfc[1], col = "red")
+plot(buff_point, add = TRUE, lty = 3, lwd = 2, col = "grey")
 ```
 
-- **Question 5:** What happens if you change `quadsegs` to a higher number?
-- **Question 6:** Do you understand the script? What is the difference between `gIntersection` and `gDifference`?
+- **Question 5:** What happens if you change `nQuadSegs` to a higher number?
+
+```{r, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
+## Check areal difference
+st_area(mydiff) ## what is the area of the difference?
+```
+
+```{r, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
+myintersection <- st_intersection(circles_sfc[1], buff_point)
+plot(myintersection, col="grey")
+plot(mydiff, col = "red", add = TRUE)
+```
+
+```{r outcome}
+st_area(myintersection)
+print(paste("The difference in area =", round(100 * st_area(mydiff) / st_area(myintersection),2), "%"))
+```
+
+
+- **Question 6:** Do you understand the script? What is the difference between `st_difference` and `st_intersection` ?
 
 # Today's summary
 
 We learned about:
 
-- The spatial classes of the **sp** package
-- How to read/write data and change data format with **rgdal** package (`readOGR()` and `writeOGR()`)
-- Visualize spatial vector data in R and in Google Earth
-- How to perform simple operations on Geometries in R using the **rgeos** package
-
+- The geometry types of the **sf** package: points, linestrings, polygons etc. 
+- The data classes of the **sf** package: sfg, sfc and sf
+- How to read/write data and change vector data format (KML, shapefile and geoJSON)
+- Visualize spatial vector data in R and in Google Maps
+- How to perform simple spatial operations on Geometries in R using the **sf** package
 
 # Excercise of today
 
@@ -397,10 +485,10 @@ First, download and unzip the following shape files manually from this [website]
 Second, create a clear and documented script that:
 
   * Selects the "industrial" (`type == "industrial"`) railways
-  * Buffers the "industrial" railways with a buffer of 1000m (hint: `gBuffer` with `byid=TRUE`)
+  * Buffers the "industrial" railways with a buffer of 1000m (hint: `st_buffer`)
   * Find the place (i.e. a city) that `intersects` with this buffer.
   * Create a `plot` that shows the buffer, the points, and the name of the city
-  * write down the name of the city and the `population` of that city as one comment at the end of the script.
+  * Write down the name of the city and the `population` of that city as one comment at the end of the script.
   
 Think about project structure and use of git!
     
