@@ -43,7 +43,7 @@ In this tutorial we will use the *sf* package. It is a  spatial vector data pack
 
 The *sf* package focuses solely on vector data. It provides a standardized encoding of vector data and uses GDAL to read and write data, GEOS for geometrical operations and Proj.4 for projection conversions and datum transformations.
 
-The *sp* package provides classes for importing, manipulating and exporting spatial data in R, and methods for doing so. It can handle both vectors and rastrs. It is often the foundation for other spatial packages, such as *raster*.
+The *sp* package provides classes for importing, manipulating and exporting spatial data in R, and methods for doing so. It can handle both vectors and rasters. It is often the foundation for other spatial packages, such as *raster*.
 
 The *rgdal* package includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as GML, GeoJSON, ESRI Shapefiles and KML. The OGR library is part of the widely used **Geospatial Data Abstraction Library** (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data.
 The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow access from a variety of other languages including *R* and *Python* but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunately, the *sf* package, providing GDAL bindings in R, is also well documented with lots of examples. The same is valid for the Python libaries.
