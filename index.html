@@ -871,9 +871,9 @@ Week 2, Lesson 6: Intro to vector with R
 <div class="contents col-xs-12 col-md-10">
 <h1 id="wur-geoscripting-wur-logo"><a href="https://geoscripting-wur.github.io/">WUR Geoscripting</a> <img src="http://www.wageningenur.nl/upload/f9a0b5f2-15c5-4b84-9e14-20ef02f5e265_wur-logo.png" alt="WUR logo" /></h1>
 <p>Authors: Jan Verbesselt, Sytze de Bruyn, Loïc Dutrieux, Valerio Avitabile, Dainius Masiliunas, David Swinkels</p>
-<p>26 October, 2017</p>
+<p>30 October, 2017</p>
 <h1 id="week-2-lesson-6-intro-to-vector-with-r">Week 2, Lesson 6: Intro to vector with R</h1>
-<h2 id="todo-in-the-morning">ToDo in the morning</h2>
+<h2 id="to-do-in-the-morning">To Do in the morning</h2>
 <p>Go through the whole lesson and try to answer the questions below. We will address the questions in the lesson and discuss them.</p>
 <h2 id="objective-of-today">Objective of today</h2>
 <p>Learn how to handle vector data</p>
@@ -884,15 +884,15 @@ Week 2, Lesson 6: Intro to vector with R
 <li>explore the structure of <code>sf</code> classes for spatial vector data;</li>
 <li>plot spatial vector data;</li>
 <li>transform between datums and map projections;</li>
-<li>write and read spatial vector formats (e.g. kml, geoJSON, shapefile);</li>
+<li>write and read spatial vector formats (e.g. KML, GML, GeoJSON, shapefile);</li>
 <li>apply basic operations on vector data, such as buffering, intersection and area calculation;</li>
 </ul>
 <h1 id="vector-r-basics">Vector R basics</h1>
 <h2 id="some-packages-for-working-with-spatial-vector-data-in-r">Some packages for working with spatial vector data in R</h2>
-<p>In this tutorial we will use the <em>sf</em> package. It is a spatial vector data package, that builds on top of <em>sp</em>, <em>rgdal</em> and <em>rgeos</em> packages. The packages <em>sp</em> and <em>rgdal</em> are widely used throughout this course. Both packages not only provide functionality for vector data but also for raster data.</p>
+<p>In this tutorial we will use the <em>sf</em> package. It is a spatial vector data package, that builds on top of <em>sp</em>, <em>rgdal</em> and <em>rgeos</em> packages.</p>
 <p>The <em>sf</em> package focuses solely on vector data. It provides a standardized encoding of vector data and uses GDAL to read and write data, GEOS for geometrical operations and Proj.4 for projection conversions and datum transformations.</p>
-<p>The <em>sp</em> package provides classes for importing, manipulating and exporting spatial data in R, and methods for doing so. It is often the foundation for other spatial packages, such as raster.</p>
-<p>The <em>rgdal</em> package includes bindings to parts of the <strong>OGR Simple Feature Library</strong> which provides access to a variety of vector file formats such as ESRI Shapefiles, geojson and kml. The OGR library is part of the widely used <strong>Geospatial Data Abstraction Library</strong> (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data. The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow access from a variety of other languages including <em>R</em> and <em>Python</em> but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunately, the <em>sf</em> package, providing GDAL bindings in R, is also well documented with lots of examples. The same is valid for the Python libaries.</p>
+<p>The <em>sp</em> package provides classes for importing, manipulating and exporting spatial data in R, and methods for doing so. It can handle both vectors and rastrs. It is often the foundation for other spatial packages, such as <em>raster</em>.</p>
+<p>The <em>rgdal</em> package includes bindings to parts of the <strong>OGR Simple Feature Library</strong> which provides access to a variety of vector file formats such as GML, GeoJSON, ESRI Shapefiles and KML. The OGR library is part of the widely used <strong>Geospatial Data Abstraction Library</strong> (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data. The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow access from a variety of other languages including <em>R</em> and <em>Python</em> but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunately, the <em>sf</em> package, providing GDAL bindings in R, is also well documented with lots of examples. The same is valid for the Python libaries.</p>
 <p>Similarly, <em>rgeos</em> is an interface to the powerful <strong>Geometry Engine Open Source (GEOS)</strong> library for all kinds of operations on geometries (buffering, overlaying, area calculations, etc.).</p>
 <p>Thus, functionality that you commonly find in expensive GIS software is also available within R, using free but very powerful software libaries.</p>
 <p>The possiblities are huge. In this course we can only scratch the surface with some essentials, which hopefully invite you to experiment further and use them in your research. Details can be found in the book <em>Applied Spatial Data Analysis with R</em> and several vignettes authored by Roger Bivand, Edzer Pebesma and Virgilio Gomez-Rubio.</p>
@@ -957,8 +957,8 @@ Week 2, Lesson 6: Intro to vector with R
 <li>simple features (sf): simple feature collections linked to a data.frame with feature attributes;</li>
 </ul>
 <p>We will go through a few examples of creating geometries from scratch to familiarize yourself with these geometry types and data classes.</p>
-<p>First, go to <a href="https://www.google.nl/maps/?hl=en">Google Maps</a> on your computer and make a note of the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point.</p>
-<p><strong>Question 1:</strong> In what coordinate reference system [crs] are your points from google maps? What is the EPSG belonging to that crs?</p>
+<p>First, go to <a href="https://www.google.nl/maps/?hl=en">Google Maps</a> on your computer, click on a location (e.g. a building or or road), look at the bottom of the banner that pops up and copy the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point.</p>
+<p><strong>Question 1:</strong> In what coordinate reference system [CRS] are your points from Google Maps? What is the EPSG belonging to that CRS?</p>
 <h3 id="points">Points</h3>
 <p>The example below shows how you can create spatial point objects from these coordinates. Type <code>?function name</code> (e.g. <code>?st_point</code>) for finding help on the functions used.</p>
 <div class="row">
@@ -966,9 +966,16 @@ Week 2, Lesson 6: Intro to vector with R
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r">## Load the sf package
-library(sf)
-
-## Create two simple feature geometry points
+library(sf)</code></pre>
+<button class="message R toggle btn btn-xs btn-info">
+<span class="glyphicon glyphicon-chevron-down"></span> R message
+</button>
+<pre style=""><code class="message r">## Linking to GEOS 3.5.1, GDAL 2.2.1, proj.4 4.9.2, lwgeom 2.4.0 r15853
+</code></pre>
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">## Create two simple feature geometry points
 ## Get coordinates of two points identified in Google Maps, for example:
 point1_sfg <- st_point(c(5.664190, 51.993843))  # enter your own lat/long
 point2_sfg <- st_point(c(5.673310, 51.982752))   # enter your own lat/long
@@ -977,8 +984,6 @@ point2_sfg <- st_point(c(5.673310, 51.982752))   # enter your own lat/long
 mypoints_sfc <- st_sfc(point1_sfg, point2_sfg, crs = 4326) 
 mypoints_sfc_wgs <- st_sfc(point1_sfg, point2_sfg, crs = "+proj=longlat +datum=WGS84 +no_defs")
 # These two functions do the same. Which one do you like more?
-
-## Are they identical?
 identical(mypoints_sfc, mypoints_sfc_wgs)</code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
@@ -990,7 +995,14 @@ identical(mypoints_sfc, mypoints_sfc_wgs)</code></pre>
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r">## Inspect the data class and geometry types of your objects
+<pre style=""><code class="source r">## Are they identical?
+identical(mypoints_sfc, mypoints_sfc_wgs)</code></pre>
+</div>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">## Inspect the geometry types and data class of your objects
 point1_sfg
 class(point1_sfg)
 
@@ -1038,20 +1050,6 @@ plot(mypoints_sf[,"name"], col = c("orange","blue"))</code></pre>
 <div class="row">
 <div class="col-md-offset-3 col-md-6">
 <a href="#" class="thumbnail"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAByFBMVEUAAAACAgIDAwMEBAQFBQUGBgYJCQkLCwsMDAwNDQ0PDw8QEBARERETExMVFRUYGBgZGRkbGxseHh4fHx8hISEiIiIjIyMnJycrKystLS0xMTE2NjY4ODg6Ojo9Pf8+Pj4/Pz9AQEBBQUFBQf9CQkJHR0dLS0tLS/9MTExNTU1PT09RUVFUVFRVVf9WVv9XV1dZWVlbW1tdXV1eXl5iYmJjY2NkZGRqav9sbP9vb29xcXFzc3N2dnZ3d3d6ev98fP99ff9+fv+BgYGCgoKHh4eMjIyOjo6Ojv+QkJCQkP+RkZGYmJibm5ufn5+hoaGpqamsrKytrf+urq6vr/+6uv+7u7u8vLy9vf++vr7AwMDBwf/Dw//ExMTHx8fNzc3R0dHS0tLS0v/U1P/W1tbX19fZ2dnb29vc3P/d3d3d3f/f39/i4uLi4v/j4+Pk5OTk5P/l5eXm5v/n5+fn5//o6Ojr6+vv7+/y8vLz8/P09PT+/v7/uz//vUT/v0r/v0v/wU//w1b/xVv/xl3/ymj/0Hv/1Yj/14//3Z7/36X/47D/5rn/6L//6cL/6sT/89z/9OH/9ub/9+f/+e7/+vD/+/T//fn//vz///8fT+WSAAAACXBIWXMAAAsSAAALEgHS3X78AAAGTElEQVR4nO3UV89VVRhG0S2ooIKKKPYuYlfsvXfF3ruC2BuKBey9Ydf9dz1wp/kuPdk5jjmS9V4/yUzWMIY0TD0g0yg8qvCowqMKjyo8qvCowqMKjyo8qvCowqMKjyo8qvCowqMKjyo8qvCowqMKjyo8qvCowqMKjyo8Sg2/bVh93xErT3tnHB88ZuUBpzw1bh0Ou3nNIbc+edSKE14cx5fPWL363NemHjlPbvhlex+x13Dx+Mq+y048eli7Y+sw7HP47K1bMZw5vn/w8tPXD4d+MPXKOXLDDw+Ndw1Hjo+uv2F8d/mwfRZ+y3j8cN6OR4Z14+3Dhdu3nzTcPfXKOXLD779j3DxrPD595Ukrh2Hb1mHNOG4c7pz9+WvHi4c9rp965Ry54VeP45ZZ+CeWrbr8nlW7w6/dHX7TnvAXDJc9OPP81CvniA9/xXDV+Mzwr/A3DheN4x1XPDX1yjniw980rDztoGF48x/ht68azjp1OOy9qVfOER/+g437rbv92GHTP8KPm9cfcOD5r089cp7U8LzCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCoxYw/E+7fp96wv/AwoX/89PPvtz57dQrFt/Chf/qm3H868Nfpp6x8BYu/Md/zM7X3009Y+EtXPjPf56dL3+cesbCW7jwP3zy27hr559Tz1h4Cxd+/P6jnV/8OvWIxbd44fOfKDyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKjyq8KjCowqPKvycvfX421NPWFLh5+vqDdduuHbqEUsp/Fw9cOnsXPLw1DOWUPi5uubx2XnsuqlnLKHwc3XL/bNz721Tz1hC4efq1eNeGl847o2pZyyh8PP17Nknn/Pc1COWUnhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUeVXhU4VGFRxUe9TdXvfMp7s9YNgAAAABJRU5ErkJggg==" /></a>
-</div>
-</div>
-</div>
-<div class="row">
-<button class="source R toggle btn btn-xs btn-primary">
-<span class="glyphicon glyphicon-chevron-down"></span> R source
-</button>
-<pre style=""><code class="source r">## We can make nicer plots with the ggplot package
-## Simple feature objects work with other packages (such as ggplot2 and mapview)
-library(ggplot2)
-ggplot(data = mypoints_sf) + geom_sf(aes(color = name))</code></pre>
-<div class="row">
-<div class="col-md-offset-3 col-md-6">
-<a href="#" class="thumbnail"><img src="data:image/png;base64,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0dd9pP4P5r3x9OnT3d3d8fHxgTPJzTffnJ6eLoSIjIwU1/urCOBZN99w8eLFO++8c9asWX/605+MRqP39+WPPvrozJkz77zzzrFjx2w228cff+y72NXVtXXr1lmzZn322WeTJ0+2Wq3bt2+PiYkZPXp0Y2Pj66+/7nQ6d+3atWvXLpvNdrXPP7mGefwWR4wYcR3nubaR4uLiXn755bKyMiFERkbGzTfffH1H6v9g3qdI/cd//MecOXMiIiKu7yfrO04SHh7+0Ucfvf/++7m5ubGxsQMxGG5YhP4bRowYMWLECEVROjo6Tp8+7T0E++yzz6Kjo5944omjR49+/fXXLS0tvouHDh266667hg4deujQocmTJ0dERCQnJ996661CiMbGxpaWlmeeeWbq1KlTp069hu/Pa5jHb3H8+PHXcZ5rG6mqqspmsy1ZsqSuru7cuXMTJky4viP1f7DExES32/3hhx9mZmYKIa7vJ+u7TKKq6muvvXbixImnn346MjJygAbDDYtTN99gt9udTqeqqtXV1aNGjfLemJSUZDKZFEUxmUzd3d1+i3V1deXl5UVFRX/+858rKio0n8dv8frOc20jud1ui8WiKIrZbB64fzvoz2BCiP/6r/8a6H9DvYZJHA6HXq9/6qmnvKdugOuL59F/Q1NTU1FR0cWLFxMSEhYvXnz06NHy8vKnn356w4YNX3311dChQ5cuXarX630XvUdYDQ0NpaWlvZ91s3r16tjYWO/izJkz09LSBnqePse7XvNc20gXLlwoKirq6OiIiorKz8/3e0rJdx+p/4OFhYW9+OKLDz/8sPdg2Ze2k5SUlBw8eND7ycrJyZkyZcpADIYbFqEHAMlx6gYAJEfoAUByhB4AJEfoAUBy/x933Lon7a3REAAAAABJRU5ErkJggg==" /></a>
 </div>
 </div>
 </div>
@@ -1107,7 +1105,7 @@ myline_sf</code></pre>
 <p><em>Try to understand the above code and its results by studying help: ?plot_sf</em></p>
 <p><em>Try to add the points together with the lines on the same map.</em></p>
 <h3 id="writing-and-reading-spatial-vector-data">Writing and reading spatial vector data</h3>
-<p>What now follows is a brief intermezzo before we continue with the classes for polygons. We will use the OGR functionality of gdal available through the package <em>sf</em>.</p>
+<p>What now follows is a brief intermezzo before we continue with the classes for polygons. We will use the OGR functionality of GDAL available through the package <em>sf</em>.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1142,12 +1140,17 @@ st_write(obj = mypoints_sf, dsn = "./data/mypoints.kml")</code></pre>
 </div>
 <p>The function <code>st_write</code> requires entries for the arguments <code>obj</code> (object of class sf) and <code>dsn</code> (data source name). The function detects what driver it needs based on the file extension of the dsn. Please study details in the help file: ?st_write. Similarly the function <code>st_read</code> allows reading OGR compatible data into a suitable simple feature object.</p>
 <p>Check (in Google Maps) whether the attribute data were written correctly to the KML output (use <a href="https://www.google.com/maps/about/mymaps/">My Maps</a> from Google). You need to be logged in on your google account, go to <a href="https://www.google.com/maps/about/mymaps/">My Maps</a>, click <code>get started</code>, click the <code>+</code> button to create a new digital map. On the untitled layer click <code>import</code>, import the mypoints.kml, add a new layer and import myline.kml. Cool! You just created a webmap with your point and line features.</p>
-<p>Now let us see if we can create a line in the webmap and import it to R. Digitize a route (e.g. a walk) between two points of interest in Wageningen: click on the <code>draw a line</code> symbol (between the place marker and the direction symbol), click <code>Add walking route</code>, draw your route in Wageningen and name the new layer <code>route</code>. Click on the main menu in the left panel (top ... symbol), click <code>export to kml</code>, click <code>export to .KML file</code>, select your route layer and download the kml (check <a href="https://support.google.com/mymaps/answer/3109452?hl=en">here</a> how to export). Save the kml in the data folder within the working directory under the name <code>route.kml</code>. We will read this file into a simple features object.</p>
+<p>Now let us see if we can create a line in the webmap and import it to R. Digitize a route (e.g. a walking route) between two points of interest in Wageningen: click on the <code>draw a line</code> symbol (between the place marker and the direction symbol), click <code>Add walking route</code>, draw your route in Wageningen and name the new layer <code>route</code>. Click on the main menu in the left panel (top ... symbol), click <code>export to KML</code>, click <code>export to .KML file</code>, select your route layer and download the kml (check <a href="https://support.google.com/mymaps/answer/3109452?hl=en">here</a> how to export). Save the KML in the data folder within the working directory under the name <code>route.kml</code>. We will read this file into a simple features object.</p>
 <div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">## Read the KML as a simple feature
+myroute <- st_read(dsn = "./data/route.kml") </code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
 </button>
-<pre style=""><code class="output r">## Reading layer `route' from data source `/home/WUR/swink019/Documents/Workspace/Lesson6/IntroToVector-gh-pages/data/route.kml' using driver `LIBKML'
+<pre style=""><code class="output r">## Reading layer `route' from data source `/home/WUR/swink019/Documents/Workspace/Lesson6Update/data/route.kml' using driver `LIBKML'
 ## Simple feature collection with 3 features and 11 fields
 ## geometry type:  GEOMETRY
 ## dimension:      XYZ
@@ -1160,7 +1163,7 @@ st_write(obj = mypoints_sf, dsn = "./data/mypoints.kml")</code></pre>
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r">myroute #What is the geometry type of objects? </code></pre>
+<pre style=""><code class="source r">myroute #What is the geometry type of this object? </code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
 </button>
@@ -1205,12 +1208,12 @@ plot(myroute) # What geometry types do you see?</code></pre>
 </div>
 </div>
 </div>
-<p>Now we have the data, but some of our friends want this exact data too. One friend of ours is a software engineer and he wants a geoJSON. Another friend is a GIS-developer and he prefers a shapefile. Let's try to give them the files in those formats!</p>
+<p>Now we have the data, but some of our friends want this exact data too. One friend of ours is a software engineer and he wants a GeoJSON. Another friend is a GIS-analyst in QGIS and as a backup he wants the file in two formats: Geographic Markup Language (GML) and a shapefile . These fileformats (KML, GeoJSON, GML and shapefile) are commonly used. Let's try to give them the files in those formats!</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r">## Try to export the simple feature to a geoJSON. What happens?
+<pre style=""><code class="source r">## Try to export the simple feature to a GeoJSON. What happens?
 try(st_write(myroute, dsn = "./data/route.geojson"))</code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
@@ -1221,7 +1224,23 @@ try(st_write(myroute, dsn = "./data/route.geojson"))</code></pre>
 ## geometry type:  3D Unknown (any)
 </code></pre>
 </div>
-<p>Okay succes! Let us continue with the shapefile.</p>
+<p>Okay success! Let us continue with the GML.</p>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">## Try to export the simple feature to a GeoJSON. What happens?
+try(st_write(myroute, dsn = "./data/route.gml"))</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r">## Writing layer `route' to data source `./data/route.gml' using driver `GML'
+## features:       3
+## fields:         1
+## geometry type:  3D Unknown (any)
+</code></pre>
+</div>
+<p>Works! Now transform to a shapefile.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1249,7 +1268,7 @@ try(st_write(myroute, dsn = "./data/route.shp"))</code></pre>
 <pre style=""><code class="output r">## Failed to create feature 1 in route
 </code></pre>
 </div>
-<p>Writing the myroute object to a shapefile works only for linestring, but not for the points. Shapefiles do not handle multiple geometry types well. We can solve this! Have a look at ?st_is</p>
+<p>Writing the myroute object to a shapefile worked only for the linestring, but did not work for the points. Shapefiles do not handle multiple geometry types well. We can solve this! Have a look at <code>?st_is</code>.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1309,15 +1328,21 @@ try(st_write(myroute_line, dsn = "./data/route_line.shp"))</code></pre>
 <pre style=""><code class="output r">## Creating layer route_points failed.
 </code></pre>
 </div>
-<p>We run into another issue; suddenly shapefiles do not support 3D line strings and points. We have fixed the geometry type, but now need to work on the dimensions of the data. Let us look into dimensions.</p>
+<p>We run into another issue; shapefiles do not support 3D line strings and points. We have fixed the geometry type, but now need to work on the dimensions of the data. Let us look into dimensions.</p>
 <h2 id="dimensions">Dimensions</h2>
 <p>All geometries are composed of points. Points are coordinates in a 2-, 3- or 4-dimensional space. All points in a geometry have the same dimensionality. In addition to X and Y coordinates, there are two optional additional dimensions:</p>
 <ul>
 <li>a Z coordinate, denoting altitude</li>
 <li>a M coordinate (rarely used), denoting a measure that is associated with the point; examples could be time of measurement, or measurement error of the coordinates</li>
 </ul>
-<p>The four possible cases are: 1. two-dimensional points refer to x and y, easting and northing, or longitude and latitude, we refer to them as XY 2. three-dimensional points as XYZ 3. three-dimensional points as XYM 4. four-dimensional points as XYZM (the third axis is Z, fourth M)</p>
-<p>So we need to find a function that changes dimensions. Have a look at ?st_zm</p>
+<p>The four possible cases are:</p>
+<ol style="list-style-type: decimal">
+<li>two-dimensional points <code>XY</code></li>
+<li>three-dimensional points <code>XYZ</code></li>
+<li>three-dimensional points <code>XYM</code></li>
+<li>four-dimensional points <code>XYZM</code></li>
+</ol>
+<p>So we need to find a function that changes dimensions from XYZ to XY. Feel free to script your own function that can change the dimensions. Otherwise look into <code>?st_zm</code>.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1380,12 +1405,13 @@ try(st_write(myroute_points_xy, dsn = "./data/route_points.shp"))</code></pre>
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r">try((st_write(myroute_line_xy, dsn = "./data/route.shp", delete_layer = TRUE))) #Overwrite your previous shapefile by adding delete_layer = TRUE</code></pre>
+<pre style=""><code class="source r">#Overwrite your previous shapefile by adding delete_layer = TRUE
+try((st_write(myroute_line_xy, dsn = "./data/route.shp", delete_layer = TRUE))) </code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
 </button>
 <pre style=""><code class="output r">## Deleting layer `route' using driver `ESRI Shapefile'
-## Writing layer `route' to data source `/home/WUR/swink019/Documents/Workspace/Lesson6/IntroToVector-gh-pages/data/route.shp' using driver `ESRI Shapefile'
+## Writing layer `route' to data source `/home/WUR/swink019/Documents/Workspace/Lesson6Update/data/route.shp' using driver `ESRI Shapefile'
 ## features:       1
 ## fields:         1
 ## geometry type:  Line String
@@ -1396,12 +1422,12 @@ try(st_write(myroute_points_xy, dsn = "./data/route_points.shp"))</code></pre>
 <pre style=""><code class="output r">## NULL
 </code></pre>
 </div>
-<p>Hooray, it worked! Now our friends have the data they wanted. Try to understand the above code and results. Feel free to display the data and visualize in Qgis.</p>
+<p>Hooray, it worked! Now our friends have the data they wanted. Try to understand the above code and results. Feel free to display the data in QGIS.</p>
 <h3 id="transformation-of-coordinate-system">Transformation of coordinate system</h3>
-<p>Transformations between coordinate systems are crucial to many GIS applications. The <strong>Keyhole Markup Language (kml)</strong> used by Google Earth uses latitude and longitude in a polar WGS84 coordinate system (i.e. geographic coordinates). However, in some of the examples below we will use metric distances (i.e. carthographic coordinates).There are two types of coordinate systems that you need to recognise: <strong>projected coordinate systems</strong> and <strong>unprojected coordinates systems</strong></p>
+<p>Transformations between coordinate systems are crucial to many GIS applications. The <strong>Keyhole Markup Language (KML)</strong> used by Google Earth uses latitude and longitude in a polar WGS84 coordinate system (i.e. geographic coordinates). However, in some of the examples below we will use metric distances (i.e. projected coordinates).There are two types of coordinate systems that you need to recognise: <strong>projected coordinate systems</strong> and <strong>geographic coordinate systems</strong>.</p>
 <p>One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. Projected coordinates are coordinates that refer to a point on a two-dimensional map that <em>represents</em> the surface of the Earth (i.e. <strong>projected coordinate system</strong>). Latitude and Longitude values are an example of an <strong>unprojected coordinate system</strong>. These are coordinates that directly refer to a point on the Earth's surface. One way to deal with this is by transforming the data to a planar coordinate system. In <code>R</code> this can be achieved via bindings to the <strong>PROJ.4 - Cartographic Projections Library</strong> (<a href="http://trac.osgeo.org/proj/" class="uri">http://trac.osgeo.org/proj/</a>), which are available in <em>sf</em>.</p>
 <p>Central to spatial data in the <em>sf</em> package is that they have a coordinate reference system, which is coded as a numeric epsg code and a character string describing the projection by the <em>PROJ.4</em> projection library. Operations on different spatial data sets need to have compatible coordinate reference systems (i.e., identical). An interface to the <em>PROJ.4</em> library is available through the <em>sf</em> package.</p>
-<p>We will transform our spatial data to the Dutch grid (Rijksdriehoekstelsel), often referred to as RD. Please note that:</p>
+<p>We will transform our spatial data to the Dutch grid (Rijksdriehoekstelsel), often referred to as RD or RD_New. Please note that:</p>
 <ul>
 <li>Some widely spread definitions of the Dutch grid (<strong>EPSG: 28992</strong>) are incomplete (see e.g. <a href="http://www.spatialreference.org" class="uri">http://www.spatialreference.org</a> and search for the EPSG number);</li>
 <li>The transformation used below is approximate. Details can be found at <a href="http://nl.wikipedia.org/wiki/Rijksdriehoekscoordinaten" class="uri">http://nl.wikipedia.org/wiki/Rijksdriehoekscoordinaten</a>.</li>
@@ -1412,7 +1438,7 @@ try(st_write(myroute_points_xy, dsn = "./data/route_points.shp"))</code></pre>
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r">## Define CRS object for RD projection
-# See how the transformation from unprojected wgs84 is defined to a projected coordinate system
+# See how the transformation from unprojected WGS84 is defined to a projected coordinate system
 prj_string_RD <- st_crs("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +units=m +no_defs")
 
 ## Perform the coordinate transformation from WGS84 to RD
@@ -1451,8 +1477,28 @@ box()</code></pre>
 </button>
 <pre style=""><code class="source r">## Let us use different methods to calculate the distance between the two points
 
-## Network distance: wgs84, rd_new
-(dist_route_wgs84 = st_length(myroute_line_xy)) # line with WGS84 crs</code></pre>
+## Before we calculate distances we need the package geosphere
+try(install.packages("geosphere"))</code></pre>
+<button class="message R toggle btn btn-xs btn-info">
+<span class="glyphicon glyphicon-chevron-down"></span> R message
+</button>
+<pre style=""><code class="message r">## Installing package into '/home/WUR/swink019/R/x86_64-pc-linux-gnu-library/3.4'
+## (as 'lib' is unspecified)
+</code></pre>
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">library(geosphere)</code></pre>
+<button class="message R toggle btn btn-xs btn-info">
+<span class="glyphicon glyphicon-chevron-down"></span> R message
+</button>
+<pre style=""><code class="message r">## Loading required package: sp
+</code></pre>
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">## Network distance: WGS84, RD_New
+(dist_route_wgs84 = st_length(myroute_line_xy)) # line with WGS84 CRS</code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
 </button>
@@ -1461,7 +1507,7 @@ box()</code></pre>
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r">(dist_route_rdnew = st_length(myroute_rd_num)) # line with RD_new crs</code></pre>
+<pre style=""><code class="source r">(dist_route_rdnew = st_length(myroute_rd_num)) # line with RD_new CRS</code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
 </button>
@@ -1470,8 +1516,9 @@ box()</code></pre>
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r">## Euclidean distance: wgs84, rd_new
-(dist_points_wgs = st_distance(myroute_points_xy)[1,2])# Get data from matrix position [1, 2]</code></pre>
+<pre style=""><code class="source r">## Euclidean distance: WGS84, RD_New
+# Get data from matrix position [1, 2]
+(dist_points_wgs = st_distance(myroute_points_xy)[1,2])</code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
 </button>
@@ -1487,10 +1534,19 @@ box()</code></pre>
 <pre style=""><code class="output r">## 602.6681 m
 </code></pre>
 </div>
-<p>Okay as expected the network distance is bigger than than a straight line between the two points, but a question remains:</p>
-<p><strong>Question 4:</strong> Why does the distance slightly differ between objects with crs wgs_84 and rd_new?</p>
-<p>Now we know the network and euclidean distance between the two points. As you might have noticed the st_length() and st_distance() functions gave a unit behind the number. It was a meter in our case, but maybe we want to know how many feet or inch the distance was. The <em>sf</em> package allows unit conversions by binding with the <em>units</em> package.</p>
+<p>Okay as expected the network distance is bigger than a straight line between the two points, but a question remains:</p>
+<p><strong>Question 4:</strong> Why does the distance slightly differ between objects with CRS WGS84 and RD_New?</p>
+<p>Now we know the network and euclidean distance between the two points. As you might have noticed the <code>st_length()</code> and <code>st_distance()</code> functions gave a unit behind the number. It was a meter in our case, but maybe we want to know how many feet or inch the distance was. The <em>sf</em> package allows unit conversions by bindings to the <em>units</em> package.</p>
 <div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">units::set_units(dist_points_rd , km)</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r">## 0.6026681 km
+</code></pre>
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
@@ -1512,12 +1568,8 @@ box()</code></pre>
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r">units::set_units(dist_points_rd , km)</code></pre>
-<button class="output R toggle btn btn-xs btn-success">
-<span class="glyphicon glyphicon-chevron-down"></span> R output
-</button>
-<pre style=""><code class="output r">## 0.6026681 km
-</code></pre>
+<pre style=""><code class="source r"># This is also works for surfaces or volumes
+# Later you can give a try to calculate hectares</code></pre>
 </div>
 <h3 id="polygons">Polygons</h3>
 <h4 id="polygons-with-the-sf-package">Polygons with the <em>sf</em> package</h4>
@@ -1526,8 +1578,8 @@ box()</code></pre>
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r">## Create sfg points from your route, which was converted to rd_new
-#  We need to have projected (RD_new) data to be able to measure features in 2D (e.g. meters)
+<pre style=""><code class="source r">## Create sfg points from your route, which was converted to RD_new
+#  We need to have projected (RD_New) data to be able to measure features in 2D (e.g. meters)
 
 pnt1_rd <- myroute_points_rd$geometry[[1]]
 pnt2_rd <- myroute_points_rd$geometry[[2]]
@@ -1535,7 +1587,8 @@ pnt2_rd <- myroute_points_rd$geometry[[2]]
 ## Make circles around points, with radius equal to distance between points
 ## Define a series of angles going from 0 to 2pi
 ang <- pi*0:200/100
-circle1x <- pnt1_rd[1]+ cos(ang) * as.double(dist_points_rd) # distance needs to be converted from units m class to double class
+# distance needs to be converted from units m class to double class
+circle1x <- pnt1_rd[1]+ cos(ang) * as.double(dist_points_rd) 
 circle1y <- pnt1_rd[2] + sin(ang) * as.double(dist_points_rd)
 circle2x <- pnt2_rd[1]+ cos(ang) * as.double(dist_points_rd)
 circle2y <- pnt2_rd[2] + sin(ang) * as.double(dist_points_rd)
@@ -1590,10 +1643,10 @@ plot(circles_sf)</code></pre>
 </div>
 </div>
 <h4 id="polygon-operations-with-sf-buffer-intersect-difference">Polygon operations with <em>sf</em> (buffer, intersect, difference)</h4>
-<p>Just now we calculated the points of the circle to obtain a perfect circle and then made it into a polygon, but we can also create a circular polygon by using the function st_buffer().</p>
-<p>The <em>sf</em> package can do more spatial operations by spatially selecting certain features and changing the geometry. Examples of spatial selections are st_intersects, st_contains, st_within, st_covers etc.</p>
-<p>The package can change geometries of features with st_difference (clip), st_intersection (intersect), st_union, st_sym_difference, st_centroid, st_segmentize, st_convex_hull and st_buffer. More methods can be found with the command: methods(class = &quot;sf&quot;)</p>
-<p>The final results of st_buffer can be plotted using basic R plotting commands:</p>
+<p>Just now we calculated the points of the circle to obtain a perfect circle and then made it into a polygon, but we can also create a circular polygon by using the function <code>st_buffer()</code>.</p>
+<p>The <em>sf</em> package can do more spatial operations by spatially selecting certain features and changing the geometry. Examples of spatial selections are <code>st_intersects</code>, <code>st_contains</code>, <code>st_within</code>, <code>st_covers</code> etc.</p>
+<p>The package can change geometries of features with <code>st_difference</code> (clip), <code>st_intersection</code> (intersect), <code>st_union</code>, <code>st_sym_difference</code>, <code>st_centroid</code>, <code>st_segmentize</code>, <code>st_convex_hull</code> and <code>st_buffer</code>. More methods can be found with the command: <code>methods(class = &quot;sf&quot;)</code>.</p>
+<p>The final results of <code>st_buffer</code> can be plotted using basic R plotting commands:</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1688,7 +1741,7 @@ plot(mydiff, col = "red", add = TRUE)</code></pre>
 <ul>
 <li>The geometry types of the <strong>sf</strong> package: points, linestrings, polygons etc.</li>
 <li>The data classes of the <strong>sf</strong> package: sfg, sfc and sf</li>
-<li>How to read/write data and change vector data format (KML, shapefile and geoJSON)</li>
+<li>How to read/write data and change vector data format (KML, GML, shapefile and GeoJSON)</li>
 <li>Visualize spatial vector data in R and in Google Maps</li>
 <li>How to perform simple spatial operations on Geometries in R using the <strong>sf</strong> package</li>
 </ul>
