@@ -101,7 +101,6 @@ point2_sfg <- st_point(c(5.673310, 51.982752))   # enter your own lat/long
 mypoints_sfc <- st_sfc(point1_sfg, point2_sfg, crs = 4326) 
 mypoints_sfc_wgs <- st_sfc(point1_sfg, point2_sfg, crs = "+proj=longlat +datum=WGS84 +no_defs")
 # These two functions do the same. Which one do you like more?
-identical(mypoints_sfc, mypoints_sfc_wgs)
 ```
 
 ```{r, eval = FALSE}
@@ -193,7 +192,7 @@ plot(myline_sf[1], main = myline_sf$name, col = "red", lwd = 3, lty = 5, graticu
 What now follows is a brief intermezzo before we continue with the classes for polygons. 
 We will use the OGR functionality of GDAL available through the package *sf*.
 
-```{r}
+```{r eval = FALSE}
 ## Create subdirectory data within current working directory
 #getwd() #if needed
 #setwd() 
@@ -209,11 +208,17 @@ Similarly the function `st_read` allows reading OGR compatible data into a suita
 
 Check (in Google Maps) whether the attribute data were written correctly to the KML output (use [My Maps](https://www.google.com/maps/about/mymaps/) from Google). You need to be logged in on your google account, go to [My Maps](https://www.google.com/maps/about/mymaps/), click `get started`, click the `+` button to create a new digital map. On the untitled layer click `import`, import the mypoints.kml, add a new layer and import myline.kml. Cool! You just created a webmap with your point and line features. 
 
-Now let us see if we can create a line in the webmap and import it to R. Digitize a route (e.g. a walking route) between two points of interest in Wageningen: click on the `draw a line` symbol (between the place marker and the direction symbol), click `Add walking route`, draw your route in Wageningen and name the new layer `route`. Click on the main menu in the left panel (top ... symbol), click `export to KML`, click `export to .KML file`, select your route layer and download the kml (check [here](https://support.google.com/mymaps/answer/3109452?hl=en) how to export). Save the KML in the data folder within the working directory under the name `route.kml`. We will read this file into a simple features object.
+Now let us see if we can create a line in the webmap and import it to R. Digitize a route (e.g. a walking route) between two points of interest in Wageningen: click on the `draw a line` symbol (between the place marker and the direction symbol), click `Add walking route`, draw your route in Wageningen and name the new layer `myroute`. 
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('./figs/Route_map.png')
+```
+
+Click on the main menu in the left panel (top ... symbol), click `export to KML`, check box `export to .KML file`, select your route layer and download the kml (check [here](https://support.google.com/mymaps/answer/3109452?hl=en) how to export). Save the KML in the data folder within the working directory under the name `route.kml`. We will read this file into a simple features object.
 
 ```{r}
 ## Read the KML as a simple feature
-myroute <- st_read(dsn = "./data/route.kml") 
+myroute <- st_read(dsn = "./data/myroute.kml") 
 ```
 
 ```{r}
@@ -227,21 +232,21 @@ Now we have the data, but some of our friends want this exact data too. One frie
 
 
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 ## Try to export the simple feature to a GeoJSON. What happens?
 try(st_write(myroute, dsn = "./data/route.geojson"))
 ```
 
 Okay success! Let us continue with the GML.
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 ## Try to export the simple feature to a GeoJSON. What happens?
 try(st_write(myroute, dsn = "./data/route.gml"))
 ```
 
 Works! Now transform to a shapefile.
 
-```{r, message=FALSE, warning=TRUE}
+```{r, message=FALSE, warning=TRUE, eval = FALSE}
 ## Again export to a shapefile. What happens now?
 try(st_write(myroute, dsn = "./data/route.shp"))
 ```
@@ -256,7 +261,7 @@ myroute_line <- myroute[st_is(myroute, type = "LINESTRING"),]
 myroute_points <- myroute[st_is(myroute, type = "POINT"),]
 ```
 
-```{r, eval=TRUE, message=FALSE, warning=TRUE}
+```{r, eval=FALSE, message=FALSE, warning=TRUE}
 ## Let us try to write the simple features to a shapefile
 try(st_write(myroute_line, dsn = "./data/route_line.shp"))
 try(st_write(myroute_points, dsn = "./data/route_points.shp"))
@@ -291,7 +296,7 @@ myroute_points_xy
 myroute_line_xy
 ```
 
-```{r, eval=TRUE, message = FALSE}
+```{r, eval=FALSE, message = FALSE}
 ## Try to export the simple feature to a shapefile 
 try(st_write(myroute_points_xy, dsn = "./data/route_points.shp"))
 #Overwrite your previous shapefile by adding delete_layer = TRUE
@@ -351,13 +356,13 @@ try(install.packages("geosphere"))
 library(geosphere)
 
 ## Network distance: WGS84, RD_New
-(dist_route_wgs84 = st_length(myroute_line_xy)) # line with WGS84 CRS
-(dist_route_rdnew = st_length(myroute_rd_num)) # line with RD_new CRS
+(dist_netw_wgs = st_length(myroute_line_xy)) # line with WGS84 CRS
+(dist_netw_rd = st_length(myroute_rd_num)) # line with RD_new CRS
 
 ## Euclidean distance: WGS84, RD_New
 # Get data from matrix position [1, 2]
-(dist_points_wgs = st_distance(myroute_points_xy)[1,2])
-(dist_points_rd = st_distance(myroute_points_rd)[1,2]) 
+(dist_eucl_wgs = st_distance(myroute_points_xy)[1,2])
+(dist_eucl_rd = st_distance(myroute_points_rd)[1,2]) 
 ```
 Okay as expected the network distance is bigger than a straight line between the two points, but a question remains:
 
@@ -366,10 +371,10 @@ Okay as expected the network distance is bigger than a straight line between the
 Now we know the network and euclidean distance between the two points. As you might have noticed the `st_length()` and `st_distance()` functions gave a unit behind the number. It was a meter in our case, but maybe we want to know how many feet or inch the distance was. The *sf* package allows unit conversions by bindings to the *units* package.
 
 ```{r, eval=TRUE}
-units::set_units(dist_points_rd , km)
-units::set_units(dist_points_rd , feet)
-units::set_units(dist_points_rd , inch)
-# This is also works for surfaces or volumes
+units::set_units(dist_netw_rd, km)
+units::set_units(dist_netw_rd, feet)
+units::set_units(dist_netw_rd, inch)
+# This also works for surfaces or volumes
 # Later you can give a try to calculate hectares
 ```
 
@@ -379,12 +384,23 @@ units::set_units(dist_points_rd , inch)
 After the intermezzo, we now continue with *sf* classes for polygon objects. The idea is to illustrate the classes; the data are meaningless. Let us create overlapping circles around our points.
 
 ```{r, eval=TRUE}
-## Create sfg points from your route, which was converted to RD_new
-#  We need to have projected (RD_New) data to be able to measure features in 2D (e.g. meters)
+## Create sfc with geometry in RD New
+## We need to have projected (RD_New) data to be able to measure features in 2D (e.g. meters)
+point1_sfg_rd <- st_point(c(174023.833719082, 445086.995949553))
+point2_sfg_rd <- st_point(c(174655.068279838, 443855.475880421))
 
-pnt1_rd <- myroute_points_rd$geometry[[1]]
-pnt2_rd <- myroute_points_rd$geometry[[2]]
+## Combine point features into simple feature collection with CRS
+mypoints_sfc_rd <- st_sfc(point1_sfg_rd, point2_sfg_rd, crs = 28992)
 
+## Create individual points
+pnt1_rd <- mypoints_sfc_rd[[1]]
+pnt2_rd <- mypoints_sfc_rd[[2]]
+
+## Calculate distance between points
+dist_points_rd <- st_distance(mypoints_sfc_rd)[1,2]
+```
+
+```{r, eval=TRUE}
 ## Make circles around points, with radius equal to distance between points
 ## Define a series of angles going from 0 to 2pi
 ang <- pi*0:200/100
@@ -403,7 +419,7 @@ You can plot these points using basic R plot commands:
 ```{r, fig.width=4, fig.height=6, message=TRUE, eval=TRUE, fig.align='center'}
 plot(c1, pch = 19, cex = 0.2, col = "red", ylim = range(circle1y, circle2y), xlim = range(circle1x, circle2x))
 points(c2, pch = 19, cex = 0.2, col = "blue")
-plot(myroute_points_rd, pch = 3, col= "darkgreen", add = TRUE)
+plot(mypoints_sfc_rd, pch = 3, col= "darkgreen", add = TRUE)
 ```
 See how we calculated a circle around every point. Although it looks like a closed ring, the visualized circle is not a polygon. Let's try to create a circular polygon. As before we step through the process of creating a simple feature:
 
@@ -444,10 +460,10 @@ The final results of `st_buffer` can be plotted using basic R plotting commands:
 
 ```{r, fig.height=6, fig.width=4, fig.cap="plot example of final results", fig.align='center'}
 ## Buffer and plot
-point_buff <- st_buffer(myroute_points_rd, dist = dist_points_rd)
+point_buff <- st_buffer(mypoints_sfc_rd, dist = dist_points_rd)
 
 plot(point_buff, col = c("#2b8cbe", "#31a354"), lwd = 2)
-plot(myroute_points_rd, add = TRUE, col="red", pch=19, cex=1.5)
+plot(mypoints_sfc_rd, add = TRUE, col="red", pch=19, cex=1.5)
 box()
 ```
 
@@ -455,7 +471,7 @@ box()
 
 ```{r buffering, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
 ## Buffer again with the nquadsegs option. See the difference?
-buff_point <- st_buffer(myroute_points_rd[1,],  dist=dist_points_rd, nQuadSegs=2)
+buff_point <- st_buffer(mypoints_sfc_rd[1],  dist=dist_points_rd, nQuadSegs=2)
 mydiff <- st_difference(circles_sfc[1], buff_point)
 plot(circles_sfc[1], col = "red")
 plot(buff_point, add = TRUE, lty = 3, lwd = 2, col = "grey")
@@ -476,6 +492,8 @@ plot(mydiff, col = "red", add = TRUE)
 
 ```{r outcome}
 st_area(myintersection)
+
+# What is the difference in hectare?
 print(paste("The difference in area =", round(100 * st_area(mydiff) / st_area(myintersection),2), "%"))
 ```
 
