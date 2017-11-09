@@ -4,14 +4,14 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   knitrBootstrap::bootstrap_document:
     title: "Week 2, Lesson 6: Intro to vector with R"
-    theme: cosmo
+    theme: "simplex"
+    highlight: Tomorrow Night Bright
     menu: FALSE
+    theme.chooser: TRUE
+    highlight.chooser: TRUE
 ---
 
-# [WUR Geoscripting](https://geoscripting-wur.github.io/) ![WUR logo](http://www.wageningenur.nl/upload/f9a0b5f2-15c5-4b84-9e14-20ef02f5e265_wur-logo.png)
-Authors: Jan Verbesselt, Sytze de Bruyn, Loïc Dutrieux, Valerio Avitabile, Dainius Masiliunas, David Swinkels
-
-`r format(Sys.time(), '%d %B, %Y')`
+# [WUR Geoscripting](https://geoscripting-wur.github.io/) <img src="http://www.wur.nl/upload/b43b7095-e452-482a-8969-fed9a50393a8_WUR_RGB_standard.png" alt="WUR logo" style="height: 35px;"/>
 
 # Week 2, Lesson 6: Intro to vector with R
 
@@ -43,7 +43,7 @@ In this tutorial we will use the *sf* package. It is a  spatial vector data pack
 
 The *sf* package focuses solely on vector data. It provides a standardized encoding of vector data and uses GDAL to read and write data, GEOS for geometrical operations and Proj.4 for projection conversions and datum transformations.
 
-The *sp* package provides classes for importing, manipulating and exporting spatial data in R, and methods for doing so. It can handle both vectors and rasters. It is often the foundation for other spatial packages, such as *raster*.
+Another package that commonly is used, is the *sp* package. It provides classes for importing, manipulating and exporting spatial data in R, and methods for doing so. It can handle both vectors and rasters. It is often the foundation for other spatial packages, such as *raster*.
 
 The *rgdal* package includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as GML, GeoJSON, ESRI Shapefiles and KML. The OGR library is part of the widely used **Geospatial Data Abstraction Library** (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data.
 The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow access from a variety of other languages including *R* and *Python* but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunately, the *sf* package, providing GDAL bindings in R, is also well documented with lots of examples. The same is valid for the Python libaries.
@@ -83,7 +83,7 @@ We will go through a few examples of creating geometries from scratch to familia
 
 First, go to [Google Maps](https://www.google.nl/maps/?hl=en) on your computer, click on a location (e.g. a building or or road), look at the bottom of the banner that pops up and copy the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point.
 
-**Question 1:** In what coordinate reference system [CRS] are your points from Google Maps? What is the EPSG belonging to that CRS?
+> **Question 1:** In what coordinate reference system [CRS] are your points from Google Maps? What is the EPSG belonging to that CRS?
 
 ### Points
 The example below shows how you can create spatial point objects from these coordinates. Type `?function name` (e.g. `?st_point`) for finding help on the functions used.
@@ -135,7 +135,7 @@ class(mypoints_sf) # notice how simple features are two classes
 class(mypoints_sf) == "data.frame"
 ```
 
-**Question 2:** What is the the difference between the objects `mypoints_sfc` and `mypoints_sf`?
+> **Question 2:** What is the the difference between the objects `mypoints_sfc` and `mypoints_sf`?
 
 
 ```{r, eval=TRUE}
@@ -147,7 +147,7 @@ plot(mypoints_sf[,"name"], col = c("orange","blue"))
 
 ### Lines
 
-Now let us connect the two points by a straight line. Consult how to make a line: ?st_linestring
+Now let us connect the two points by a straight line. Consult how to make a line: `?st_linestring`.
 
 ```{r}
 ## Now make the line by creating a matrix and linestring
@@ -182,7 +182,7 @@ myline_sf
 plot(myline_sf[1], main = myline_sf$name, col = "red", lwd = 3, lty = 5, graticule = TRUE, xlab = "latitude", ylab = "longitude", axes = TRUE)
 ```
 
-*Try to understand the above code and its results by studying help: ?plot_sf*
+*Try to understand the above code and its results by studying help: `?plot_sf`*
 
 *Try to add the points together with the lines on the same map.*
 
@@ -203,7 +203,7 @@ st_write(obj = mypoints_sf, dsn = "./data/mypoints.kml")
 st_write(obj = myline_sf, dsn = "./data/myline.kml")
 
 ```
-The function `st_write` requires entries for the arguments `obj` (object of class sf) and `dsn` (data source name). The function detects what driver it needs based on the file extension of the dsn. Please study details in the help file: ?st_write.
+The function `st_write` requires entries for the arguments `obj` (object of class sf) and `dsn` (data source name). The function detects what driver it needs based on the file extension of the dsn. Please study details in the help file: `?st_write`.
 Similarly the function `st_read` allows reading OGR compatible data into a suitable simple feature object. 
 
 Check (in Google Maps) whether the attribute data were written correctly to the KML output (use [My Maps](https://www.google.com/maps/about/mymaps/) from Google). You need to be logged in on your google account, go to [My Maps](https://www.google.com/maps/about/mymaps/), click `get started`, click the `+` button to create a new digital map. On the untitled layer click `import`, import the mypoints.kml, add a new layer and import myline.kml. Cool! You just created a webmap with your point and line features. 
@@ -337,7 +337,7 @@ myroute_points_rd <- st_transform(myroute_points_xy, crs = 28992)
 # Check if your transformed routes are the same
 identical(myroute_rd_string, myroute_rd_num)
 ```
-**Question 3:** Why are your routes not identical? Hint: inspect the data
+> **Question 3:** Why are your routes not identical? Hint: inspect the data
 
 After transforming the line, plot the line using the basic plot command.
 
@@ -366,7 +366,7 @@ library(geosphere)
 ```
 Okay as expected the network distance is bigger than a straight line between the two points, but a question remains:
 
-**Question 4:** Why does the distance slightly differ between objects with CRS WGS84 and RD_New? 
+> **Question 4:** Why does the distance slightly differ between objects with CRS WGS84 and RD_New? 
 
 Now we know the network and euclidean distance between the two points. As you might have noticed the `st_length()` and `st_distance()` functions gave a unit behind the number. It was a meter in our case, but maybe we want to know how many feet or inch the distance was. The *sf* package allows unit conversions by bindings to the *units* package.
 
@@ -477,7 +477,7 @@ plot(circles_sfc[1], col = "red")
 plot(buff_point, add = TRUE, lty = 3, lwd = 2, col = "grey")
 ```
 
-- **Question 5:** What happens if you change `nQuadSegs` to a higher number?
+> **Question 5:** What happens if you change `nQuadSegs` to a higher number?
 
 ```{r, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
 ## Check areal difference
@@ -498,7 +498,7 @@ print(paste("The difference in area =", round(100 * st_area(mydiff) / st_area(my
 ```
 
 
-- **Question 6:** Do you understand the script? What is the difference between `st_difference` and `st_intersection` ?
+> **Question 6:** Do you understand the script? What is the difference between `st_difference` and `st_intersection` ?
 
 # Today's summary
 
@@ -510,7 +510,7 @@ We learned about:
 - Visualize spatial vector data in R and in Google Maps
 - How to perform simple spatial operations on Geometries in R using the **sf** package
 
-# Excercise of today
+# Excercise  of today: Lesson06
 
 First, download and unzip the following shape files manually from this [website](http://www.mapcruzin.com/free-netherlands-arcgis-maps-shapefiles.htm):
   
@@ -529,9 +529,6 @@ Think about project structure and use of git!
     
 Bonus (optional!): if you can also download and unzip this within the script.
 
-## Submit
-Put your project on your GitHub account as a new repository post the **clone url** in the forum before tommorow!
-
 ## More info
 
-About projections and code: https://www.nceas.ucsb.edu/scicomp/recipes/projections
+[About projections and code](https://www.nceas.ucsb.edu/scicomp/recipes/projections)

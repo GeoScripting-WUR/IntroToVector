@@ -869,9 +869,7 @@ Week 2, Lesson 6: Intro to vector with R
 <div class="container">
 <div class="row row-offcanvas row-offcanvas-right">
 <div class="contents col-xs-12 col-md-10">
-<h1 id="wur-geoscripting-wur-logo"><a href="https://geoscripting-wur.github.io/">WUR Geoscripting</a> <img src="http://www.wageningenur.nl/upload/f9a0b5f2-15c5-4b84-9e14-20ef02f5e265_wur-logo.png" alt="WUR logo" /></h1>
-<p>Authors: Jan Verbesselt, Sytze de Bruyn, Loïc Dutrieux, Valerio Avitabile, Dainius Masiliunas, David Swinkels</p>
-<p>01 November, 2017</p>
+<h1 id="wur-geoscripting"><a href="https://geoscripting-wur.github.io/">WUR Geoscripting</a> <img src="http://www.wur.nl/upload/b43b7095-e452-482a-8969-fed9a50393a8_WUR_RGB_standard.png" alt="WUR logo" style="height: 35px;"/></h1>
 <h1 id="week-2-lesson-6-intro-to-vector-with-r">Week 2, Lesson 6: Intro to vector with R</h1>
 <h2 id="to-do-in-the-morning">To Do in the morning</h2>
 <p>Go through the whole lesson and try to answer the questions below. We will address the questions in the lesson and discuss them.</p>
@@ -891,7 +889,7 @@ Week 2, Lesson 6: Intro to vector with R
 <h2 id="some-packages-for-working-with-spatial-vector-data-in-r">Some packages for working with spatial vector data in R</h2>
 <p>In this tutorial we will use the <em>sf</em> package. It is a spatial vector data package, that builds on top of <em>sp</em>, <em>rgdal</em> and <em>rgeos</em> packages.</p>
 <p>The <em>sf</em> package focuses solely on vector data. It provides a standardized encoding of vector data and uses GDAL to read and write data, GEOS for geometrical operations and Proj.4 for projection conversions and datum transformations.</p>
-<p>The <em>sp</em> package provides classes for importing, manipulating and exporting spatial data in R, and methods for doing so. It can handle both vectors and rasters. It is often the foundation for other spatial packages, such as <em>raster</em>.</p>
+<p>Another package that commonly is used, is the <em>sp</em> package. It provides classes for importing, manipulating and exporting spatial data in R, and methods for doing so. It can handle both vectors and rasters. It is often the foundation for other spatial packages, such as <em>raster</em>.</p>
 <p>The <em>rgdal</em> package includes bindings to parts of the <strong>OGR Simple Feature Library</strong> which provides access to a variety of vector file formats such as GML, GeoJSON, ESRI Shapefiles and KML. The OGR library is part of the widely used <strong>Geospatial Data Abstraction Library</strong> (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data. The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow access from a variety of other languages including <em>R</em> and <em>Python</em> but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunately, the <em>sf</em> package, providing GDAL bindings in R, is also well documented with lots of examples. The same is valid for the Python libaries.</p>
 <p>Similarly, <em>rgeos</em> is an interface to the powerful <strong>Geometry Engine Open Source (GEOS)</strong> library for all kinds of operations on geometries (buffering, overlaying, area calculations, etc.).</p>
 <p>Thus, functionality that you commonly find in expensive GIS software is also available within R, using free but very powerful software libaries.</p>
@@ -958,7 +956,9 @@ Week 2, Lesson 6: Intro to vector with R
 </ul>
 <p>We will go through a few examples of creating geometries from scratch to familiarize yourself with these geometry types and data classes.</p>
 <p>First, go to <a href="https://www.google.nl/maps/?hl=en">Google Maps</a> on your computer, click on a location (e.g. a building or or road), look at the bottom of the banner that pops up and copy the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point.</p>
+<blockquote>
 <p><strong>Question 1:</strong> In what coordinate reference system [CRS] are your points from Google Maps? What is the EPSG belonging to that CRS?</p>
+</blockquote>
 <h3 id="points">Points</h3>
 <p>The example below shows how you can create spatial point objects from these coordinates. Type <code>?function name</code> (e.g. <code>?st_point</code>) for finding help on the functions used.</p>
 <div class="row">
@@ -1033,7 +1033,9 @@ mypoints_sf <- st_set_geometry(mydata, mypoints_sfc)</code></pre>
 class(mypoints_sf) # notice how simple features are two classes
 class(mypoints_sf) == "data.frame"</code></pre>
 </div>
+<blockquote>
 <p><strong>Question 2:</strong> What is the the difference between the objects <code>mypoints_sfc</code> and <code>mypoints_sf</code>?</p>
+</blockquote>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1048,7 +1050,7 @@ plot(mypoints_sf[,"name"], col = c("orange","blue"))</code></pre>
 </div>
 </div>
 <h3 id="lines">Lines</h3>
-<p>Now let us connect the two points by a straight line. Consult how to make a line: ?st_linestring</p>
+<p>Now let us connect the two points by a straight line. Consult how to make a line: <code>?st_linestring</code>.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1096,7 +1098,7 @@ myline_sf</code></pre>
 </div>
 </div>
 </div>
-<p><em>Try to understand the above code and its results by studying help: ?plot_sf</em></p>
+<p><em>Try to understand the above code and its results by studying help: <code>?plot_sf</code></em></p>
 <p><em>Try to add the points together with the lines on the same map.</em></p>
 <h3 id="writing-and-reading-spatial-vector-data">Writing and reading spatial vector data</h3>
 <p>What now follows is a brief intermezzo before we continue with the classes for polygons. We will use the OGR functionality of GDAL available through the package <em>sf</em>.</p>
@@ -1113,7 +1115,7 @@ dir.create("data", showWarnings = FALSE)
 st_write(obj = mypoints_sf, dsn = "./data/mypoints.kml")
 st_write(obj = myline_sf, dsn = "./data/myline.kml")</code></pre>
 </div>
-<p>The function <code>st_write</code> requires entries for the arguments <code>obj</code> (object of class sf) and <code>dsn</code> (data source name). The function detects what driver it needs based on the file extension of the dsn. Please study details in the help file: ?st_write. Similarly the function <code>st_read</code> allows reading OGR compatible data into a suitable simple feature object.</p>
+<p>The function <code>st_write</code> requires entries for the arguments <code>obj</code> (object of class sf) and <code>dsn</code> (data source name). The function detects what driver it needs based on the file extension of the dsn. Please study details in the help file: <code>?st_write</code>. Similarly the function <code>st_read</code> allows reading OGR compatible data into a suitable simple feature object.</p>
 <p>Check (in Google Maps) whether the attribute data were written correctly to the KML output (use <a href="https://www.google.com/maps/about/mymaps/">My Maps</a> from Google). You need to be logged in on your google account, go to <a href="https://www.google.com/maps/about/mymaps/">My Maps</a>, click <code>get started</code>, click the <code>+</code> button to create a new digital map. On the untitled layer click <code>import</code>, import the mypoints.kml, add a new layer and import myline.kml. Cool! You just created a webmap with your point and line features.</p>
 <p>Now let us see if we can create a line in the webmap and import it to R. Digitize a route (e.g. a walking route) between two points of interest in Wageningen: click on the <code>draw a line</code> symbol (between the place marker and the direction symbol), click <code>Add walking route</code>, draw your route in Wageningen and name the new layer <code>myroute</code>.</p>
 <div class="row">
@@ -1133,7 +1135,7 @@ myroute <- st_read(dsn = "./data/myroute.kml") </code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
 </button>
-<pre style=""><code class="output r">## Reading layer `route' from data source `/home/WUR/swink019/Documents/Workspace/Lesson6Update/data/myroute.kml' using driver `LIBKML'
+<pre style=""><code class="output r">## Reading layer `route' from data source `/home/WUR/swink019/Documents/Check/Lesson06/IntroToVector/data/myroute.kml' using driver `LIBKML'
 ## Simple feature collection with 3 features and 11 fields
 ## geometry type:  GEOMETRY
 ## dimension:      XYZ
@@ -1337,7 +1339,9 @@ identical(myroute_rd_string, myroute_rd_num)</code></pre>
 <pre style=""><code class="output r">## [1] FALSE
 </code></pre>
 </div>
+<blockquote>
 <p><strong>Question 3:</strong> Why are your routes not identical? Hint: inspect the data</p>
+</blockquote>
 <p>After transforming the line, plot the line using the basic plot command.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
@@ -1416,7 +1420,9 @@ try(install.packages("geosphere"))</code></pre>
 </code></pre>
 </div>
 <p>Okay as expected the network distance is bigger than a straight line between the two points, but a question remains:</p>
+<blockquote>
 <p><strong>Question 4:</strong> Why does the distance slightly differ between objects with CRS WGS84 and RD_New?</p>
+</blockquote>
 <p>Now we know the network and euclidean distance between the two points. As you might have noticed the <code>st_length()</code> and <code>st_distance()</code> functions gave a unit behind the number. It was a meter in our case, but maybe we want to know how many feet or inch the distance was. The <em>sf</em> package allows unit conversions by bindings to the <em>units</em> package.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
@@ -1579,9 +1585,9 @@ plot(buff_point, add = TRUE, lty = 3, lwd = 2, col = "grey")</code></pre>
 </div>
 </div>
 </div>
-<ul>
-<li><strong>Question 5:</strong> What happens if you change <code>nQuadSegs</code> to a higher number?</li>
-</ul>
+<blockquote>
+<p><strong>Question 5:</strong> What happens if you change <code>nQuadSegs</code> to a higher number?</p>
+</blockquote>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1628,9 +1634,9 @@ print(paste("The difference in area =", round(100 * st_area(mydiff) / st_area(my
 <pre style=""><code class="output r">## [1] "The difference in area = 11.05 %"
 </code></pre>
 </div>
-<ul>
-<li><strong>Question 6:</strong> Do you understand the script? What is the difference between <code>st_difference</code> and <code>st_intersection</code> ?</li>
-</ul>
+<blockquote>
+<p><strong>Question 6:</strong> Do you understand the script? What is the difference between <code>st_difference</code> and <code>st_intersection</code> ?</p>
+</blockquote>
 <h1 id="todays-summary">Today's summary</h1>
 <p>We learned about:</p>
 <ul>
@@ -1640,7 +1646,7 @@ print(paste("The difference in area =", round(100 * st_area(mydiff) / st_area(my
 <li>Visualize spatial vector data in R and in Google Maps</li>
 <li>How to perform simple spatial operations on Geometries in R using the <strong>sf</strong> package</li>
 </ul>
-<h1 id="excercise-of-today">Excercise of today</h1>
+<h1 id="excercise-of-today-lesson06">Excercise of today: Lesson06</h1>
 <p>First, download and unzip the following shape files manually from this <a href="http://www.mapcruzin.com/free-netherlands-arcgis-maps-shapefiles.htm">website</a>:</p>
 <ul>
 <li>Places</li>
@@ -1656,10 +1662,8 @@ print(paste("The difference in area =", round(100 * st_area(mydiff) / st_area(my
 </ul>
 <p>Think about project structure and use of git!</p>
 <p>Bonus (optional!): if you can also download and unzip this within the script.</p>
-<h2 id="submit">Submit</h2>
-<p>Put your project on your GitHub account as a new repository post the <strong>clone url</strong> in the forum before tommorow!</p>
 <h2 id="more-info">More info</h2>
-About projections and code: https://www.nceas.ucsb.edu/scicomp/recipes/projections
+<a href="https://www.nceas.ucsb.edu/scicomp/recipes/projections">About projections and code</a>
 </div>
 </div>
 </div>
@@ -1673,7 +1677,7 @@ Styled with <a href="https://github.com/jimhester/knitrBootstrap">knitrBootstrap
 </p>
 </div>
 </div>
-<link rel="stylesheet" id="theme" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/cosmo/bootstrap.min.css" media="screen"></link><link rel="stylesheet" id="highlight" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/default.min.css" media="screen"></link>
+<link rel="stylesheet" id="theme" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/simplex/bootstrap.min.css" media="screen"></link><link rel="stylesheet" id="highlight" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night-bright.min.css" media="screen"></link>
 </div>
 </body>
 </html>
