@@ -81,7 +81,7 @@ Three data classes are used in *sf* to represent features:
 
 We will go through a few examples of creating geometries from scratch to familiarize yourself with these geometry types and data classes.
 
-First, go to [Google Maps](https://www.google.nl/maps/?hl=en) on your computer, click on a location (e.g. a building or or road), look at the bottom of the banner that pops up and copy the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point.
+First, go to [Google Maps](https://www.google.nl/maps/?hl=en) on your computer, click on a location (e.g. a building or road), look at the bottom of the banner that pops up and copy the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point.
 
 > **Question 1:** In what coordinate reference system [CRS] are your points from Google Maps? What is the EPSG belonging to that CRS?
 
@@ -228,7 +228,7 @@ myroute = myroute[,"Name"] # Select name column only
 plot(myroute) # What geometry types do you see?
 ```
 
-Now we have the data, but some of our friends want this exact data too. One friend of ours is a software engineer and he wants a GeoJSON. Another friend is a GIS-analyst in QGIS and as a backup he wants the file in two formats: Geographic Markup Language (GML) and a shapefile . These fileformats (KML, GeoJSON, GML and shapefile) are commonly used. Let's try to give them the files in those formats!
+Now we have the data, but some of our friends want this exact data too. One friend of ours is a software engineer and he wants a GeoJSON. Another friend is a GIS-analyst in QGIS and as a backup he wants the file in two formats: Geographic Markup Language (GML) and a shapefile. These fileformats (KML, GeoJSON, GML and shapefile) are commonly used in spatial analysis. Let's try to give them the files in those formats!
 
 
 
@@ -374,9 +374,9 @@ Now we know the network and euclidean distance between the two points. As you mi
 units::set_units(dist_netw_rd, km)
 units::set_units(dist_netw_rd, feet)
 units::set_units(dist_netw_rd, inch)
-# This also works for surfaces or volumes
-# Later you can give a try to calculate hectares
 ```
+
+Calculating units can also be performed for surfaces or volumes. Later you can give a try to calculate from square meters to hectares for a surface area.
 
 ### Polygons
 
@@ -464,37 +464,37 @@ point_buff <- st_buffer(mypoints_sfc_rd, dist = dist_points_rd)
 
 plot(point_buff, col = c("#2b8cbe", "#31a354"), lwd = 2)
 plot(mypoints_sfc_rd, add = TRUE, col="red", pch=19, cex=1.5)
-box()
 ```
 
 
 
 ```{r buffering, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
 ## Buffer again with the nquadsegs option. See the difference?
-buff_point <- st_buffer(mypoints_sfc_rd[1],  dist=dist_points_rd, nQuadSegs=2)
-mydiff <- st_difference(circles_sfc[1], buff_point)
+circle_quadsegs <- st_buffer(mypoints_sfc_rd[1],  dist=dist_points_rd, nQuadSegs=2)
+circles_diff <- st_difference(circles_sfc[1], circle_quadsegs)
 plot(circles_sfc[1], col = "red")
-plot(buff_point, add = TRUE, lty = 3, lwd = 2, col = "grey")
+plot(circle_quadsegs, add = TRUE, lty = 3, lwd = 2, col = "grey")
 ```
 
 > **Question 5:** What happens if you change `nQuadSegs` to a higher number?
 
 ```{r, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
 ## Check areal difference
-st_area(mydiff) ## what is the area of the difference?
+st_area(circles_diff) 
+
+# What is the difference in hectares?
+units::set_units(st_area(circles_diff),hectare) 
 ```
 
 ```{r, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
-myintersection <- st_intersection(circles_sfc[1], buff_point)
-plot(myintersection, col="grey")
-plot(mydiff, col = "red", add = TRUE)
+circles_intersect <- st_intersection(circles_sfc[1], circles_sfc[2])
+plot(circles_sfc, col = "grey")
+plot(circles_intersect, col="red", add = TRUE)
 ```
 
 ```{r outcome}
-st_area(myintersection)
-
-# What is the difference in hectare?
-print(paste("The difference in area =", round(100 * st_area(mydiff) / st_area(myintersection),2), "%"))
+# What percentage of the two circles overlaps?
+(paste(round(100 * st_area(circles_intersect) / st_area(circles_sfc[1]),2), "%"))
 ```
 
 
@@ -510,7 +510,7 @@ We learned about:
 - Visualize spatial vector data in R and in Google Maps
 - How to perform simple spatial operations on Geometries in R using the **sf** package
 
-# Excercise  of today: Lesson06
+# Exercise  of today: Lesson06
 
 First, download and unzip the following shape files manually from this [website](http://www.mapcruzin.com/free-netherlands-arcgis-maps-shapefiles.htm):
   
