@@ -214,7 +214,7 @@ Now let us see if we can create a line in the webmap and import it to R. Digitiz
 knitr::include_graphics('./figs/Route_map.png')
 ```
 
-Click on the main menu in the left panel (top ... symbol), click `export to KML`, check box `export to .KML file`, select your route layer and download the kml (check [here](https://support.google.com/mymaps/answer/3109452?hl=en) how to export). Save the KML in the data folder within the working directory under the name `route.kml`. We will read this file into a simple features object.
+Click on the main menu in the left panel (top ... symbol), click `export to KML`, check box `export to .KML file`, select your route layer and download the kml (check [here](https://support.google.com/mymaps/answer/3109452?hl=en) how to export). Save the KML in the data folder within the working directory under the name `myroute.kml`. We will read this file into a simple features object.
 
 ```{r}
 ## Read the KML as a simple feature
