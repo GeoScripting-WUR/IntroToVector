@@ -529,6 +529,22 @@ Think about project structure and use of git!
     
 Bonus (optional!): if you can also download and unzip this within the script.
 
+## Submission
+
+Via Git!
+
+
+## **Reviewing**
+
+- Each team has to review one script of the other team before **11:00**
+
+- See rubric available via this google doc: [Rubric ](https://docs.google.com/document/d/1ybw7Y1pA_yqW8Vy69saPjDhBanpQa5RyXAUxOZkBOTs/edit?usp=sharing)
+
+- The Geo-scripting team will assess the quality of the review done by each team.
+
 ## More info
 
-[About projections and code](https://www.nceas.ucsb.edu/scicomp/recipes/projections)
+
+* [Learning more about SF and Raster data via Data Camp](https://campus.datacamp.com/courses/spatial-analysis-in-r-with-sf-and-raster/)
+
+* [About projections and code](https://www.nceas.ucsb.edu/scicomp/recipes/projections)
