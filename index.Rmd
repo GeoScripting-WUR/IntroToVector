@@ -83,7 +83,9 @@ We will go through a few examples of creating geometries from scratch to familia
 
 First, go to [Google Maps](https://www.google.nl/maps/?hl=en) on your computer, click on a location (e.g. a building or road), look at the bottom of the banner that pops up and copy the longitude and latitude of two points in Wageningen that are relevant to you. Use a decimal degree notation with at least 4 digits after the decimal point.
 
+```{block, type="alert alert-success"}
 > **Question 1:** In what coordinate reference system [CRS] are your points from Google Maps? What is the EPSG belonging to that CRS?
+```
 
 ### Points
 The example below shows how you can create spatial point objects from these coordinates. Type `?function name` (e.g. `?st_point`) for finding help on the functions used.
@@ -135,8 +137,9 @@ class(mypoints_sf) # notice how simple features are two classes
 class(mypoints_sf) == "data.frame"
 ```
 
+```{block, type="alert alert-success"}
 > **Question 2:** What is the the difference between the objects `mypoints_sfc` and `mypoints_sf`?
-
+```
 
 ```{r, eval=TRUE}
 ## When plotting a simple feature it makes a plot for every column
@@ -337,7 +340,10 @@ myroute_points_rd <- st_transform(myroute_points_xy, crs = 28992)
 # Check if your transformed routes are the same
 identical(myroute_rd_string, myroute_rd_num)
 ```
+
+```{block, type="alert alert-success"}
 > **Question 3:** Why are your routes not identical? Hint: inspect the data
+```
 
 After transforming the line, plot the line using the basic plot command.
 
@@ -366,7 +372,9 @@ library(geosphere)
 ```
 Okay as expected the network distance is bigger than a straight line between the two points, but a question remains:
 
+```{block, type="alert alert-success"}
 > **Question 4:** Why does the distance slightly differ between objects with CRS WGS84 and RD_New? 
+```
 
 Now we know the network and euclidean distance between the two points. As you might have noticed the `st_length()` and `st_distance()` functions gave a unit behind the number. It was a meter in our case, but maybe we want to know how many feet or inch the distance was. The *sf* package allows unit conversions by bindings to the *units* package.
 
@@ -476,7 +484,9 @@ plot(circles_sfc[1], col = "red")
 plot(circle_quadsegs, add = TRUE, lty = 3, lwd = 2, col = "grey")
 ```
 
+```{block, type="alert alert-success"}
 > **Question 5:** What happens if you change `nQuadSegs` to a higher number?
+```
 
 ```{r, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
 ## Check areal difference
@@ -497,8 +507,9 @@ plot(circles_intersect, col="red", add = TRUE)
 (paste(round(100 * st_area(circles_intersect) / st_area(circles_sfc[1]),2), "%"))
 ```
 
-
+```{block, type="alert alert-success"}
 > **Question 6:** Do you understand the script? What is the difference between `st_difference` and `st_intersection` ?
+```
 
 # Today's summary
 
@@ -510,37 +521,54 @@ We learned about:
 - Visualize spatial vector data in R and in Google Maps
 - How to perform simple spatial operations on Geometries in R using the **sf** package
 
-# Exercise  of today: Lesson06
+# Exercise  6: Find the optimal area for an afforestation programme
 
-First, download and unzip the following shape files manually from this [website](http://www.mapcruzin.com/free-netherlands-arcgis-maps-shapefiles.htm):
+## Your task
+
+In the state of Mato Grosso, Brazil, agricultural expansion and illegal logging are constantly threatening the Amazon rainforest. Although not frequent, afforestation programmes take place in the region from time to time. Your objective here is to find an optimal area for an afforestation programme in the region, located nearby Nature reserves. Abandoned agricultural fields can be used for the plantation of new trees. However, in order to be sucessful, the programme must avoid conflicts of interest with the agribusiness. Hampering the access to the afforestation area can also help (i.e. selecting only areas far from the main roads).
+
+  * Create a 10 km buffer around Nature reserves (`lc_string=="Nature reserve`).
+  * Create a 8 km buffer around Croplands (`lc_string=="Cropland"`).
+  * Create a 5 km buffer around the roads.
+  * From the buffer created using Nature reserves, exclude areas that overlap with the roads and croplands buffers (`st_difference`).
+  * From the remaining area, find which regions intersect with abandoned agricultural fields (`lc_string=="Abandoned field"`). This will be the optimal area for afforestation.
+  * Plot the optimal area. Calculate the area of your polygon(s), and add it as the title of your plot, or as text inside the plot.
+
+## More details
+
+  * Data can be found [here](https://www.dropbox.com/sh/4n2ifcpg0wy766e/AADYNljpqwZWngzucgsoSYt1a?dl=0).
+  * "MS_land_cover.shp" is a land cover map of the state of Mato Grosso.
+  * "MS_roads.shp" is a shapefile with the main roads of Mato Grosso.
   
-  * Places
-  * Railways
+## Hints
 
-Second, create a clear and documented script that:
+  * After creating each buffer, use `st_union` to merge overlaping polygons in your buffer.
+  * `?st_intersection`
+  * `?st_area`
 
-  * Selects the "industrial" (`type == "industrial"`) railways
-  * Buffers the "industrial" railways with a buffer of 1000m (hint: `st_buffer`)
-  * Find the place (i.e. a city) that `intersects` with this buffer.
-  * Create a `plot` that shows the buffer, the points, and the name of the city
-  * Write down the name of the city and the `population` of that city as one comment at the end of the script.
-  
-Think about project structure and use of git!
-    
-Bonus (optional!): if you can also download and unzip this within the script.
+## Assessment
+
+The general rubric will be used for the assessment of your script. This can be found on the BlackBoard. The three specific tasks in the rubric your script will be assessed on are:
+
+Task1: Create buffers around the roads, the "Nature reserve" and the "Cropland" land cover types, using the above specified distances.
+
+Task2: From the Nature reserves buffer, remove regions where the afforestation should not take place. Using the remaining polygon(s), find which regions intersect with the "Abandoned field" land cover type.
+
+Task3: Plot the optimal region for afforestation. Calculate its area and add it to the plot title or as text inside the plot.
+
+## Bonus
+
+Plot the optimal area inside the map of Mato Grosso, making it possible to tell in which region of the state this area is located.
+
+```{block, type="alert alert-info"}
+Tip: to highlight the optimal area, change the color scheme of the background map.
+```
 
 ## Submission
 
-Via Git!
+Make sure your script is clear and reproducible. Make a new GitLab project according to the guidelines on BlackBoard and upload the script there. Test the script of another team (see the random team selector Shiny app) tomorrow morning and add an issue with your testing results and score according to the rubric.
 
-
-## **Reviewing**
-
-- Each team has to review one script of the other team before **11:00**
-
-- See rubric available via this google doc: [Rubric ](https://docs.google.com/document/d/1ybw7Y1pA_yqW8Vy69saPjDhBanpQa5RyXAUxOZkBOTs/edit?usp=sharing)
-
-- The Geo-scripting team will assess the quality of the review done by each team.
+Do not forget to add the team name, members and date of script at the top of your script.
 
 ## More info
 
