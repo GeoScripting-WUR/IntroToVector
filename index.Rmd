@@ -532,7 +532,7 @@ In the state of Mato Grosso, Brazil, agricultural expansion and illegal logging 
   * Create a 5 km buffer around the roads.
   * From the buffer created using Nature reserves, exclude areas that overlap with the roads and croplands buffers (`st_difference`).
   * From the remaining area, find which regions intersect with abandoned agricultural fields (`lc_string=="Abandoned field"`). This will be the optimal area for afforestation.
-  * Plot the optimal area. Calculate the area of your polygon(s), and add it as the title of your plot, or as text inside the plot.
+  * Plot the optimal region. Calculate the area of your polygon(s), and add it as the title of your plot, or as text inside the plot.
 
 ## More details
 
@@ -558,7 +558,7 @@ Task3: Plot the optimal region for afforestation. Calculate its area and add it 
 
 ## Bonus
 
-Plot the optimal area inside the map of Mato Grosso, making it possible to tell in which region of the state this area is located.
+Plot the polygon with the optimal region on top of the map of Mato Grosso, making it possible to tell in which region of the state this area is located.
 
 ```{block, type="alert alert-info"}
 Tip: to highlight the optimal area, change the color scheme of the background map.
