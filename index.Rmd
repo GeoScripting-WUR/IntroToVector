@@ -527,12 +527,13 @@ We learned about:
 
 In the state of Mato Grosso, Brazil, agricultural expansion and illegal logging are constantly threatening the Amazon rainforest. Although not frequent, afforestation programmes take place in the region from time to time. Your objective here is to find an optimal area for an afforestation programme in the region, located nearby Nature reserves. Abandoned agricultural fields can be used for the plantation of new trees. However, in order to be sucessful, the programme must avoid conflicts of interest with the agribusiness. Hampering the access to the afforestation area can also help (i.e. selecting only areas far from the main roads).
 
-  * Create a 10 km buffer around Nature reserves (`lc_string=="Nature reserve`).
+  * Create a 10 km buffer around Nature reserves (`lc_string=="Nature reserve"`).
   * Create a 8 km buffer around Croplands (`lc_string=="Cropland"`).
   * Create a 5 km buffer around the roads.
   * From the buffer created using Nature reserves, exclude areas that overlap with the roads and croplands buffers (`st_difference`).
   * From the remaining area, find which regions intersect with abandoned agricultural fields (`lc_string=="Abandoned field"`). This will be the optimal area for afforestation.
-  * Plot the optimal region. Calculate the area of your polygon(s), and add it as the title of your plot, or as text inside the plot.
+  * Plot the optimal region. Calculate the area of your optimal region polygon(s), and add it as the title of your plot, or as text inside the plot.
+
 
 ## More details
 

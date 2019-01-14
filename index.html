@@ -1672,12 +1672,13 @@ plot(circles_intersect, col="red", add = TRUE)</code></pre>
 <h2 id="your-task">Your task</h2>
 <p>In the state of Mato Grosso, Brazil, agricultural expansion and illegal logging are constantly threatening the Amazon rainforest. Although not frequent, afforestation programmes take place in the region from time to time. Your objective here is to find an optimal area for an afforestation programme in the region, located nearby Nature reserves. Abandoned agricultural fields can be used for the plantation of new trees. However, in order to be sucessful, the programme must avoid conflicts of interest with the agribusiness. Hampering the access to the afforestation area can also help (i.e. selecting only areas far from the main roads).</p>
 <ul>
-<li>Create a 10 km buffer around Nature reserves (<code>lc_string==&quot;Nature reserve</code>).</li>
+<li>Create a 10 km buffer around Nature reserves (<code>lc_string==&quot;Nature reserve&quot;</code>).</li>
 <li>Create a 8 km buffer around Croplands (<code>lc_string==&quot;Cropland&quot;</code>).</li>
 <li>Create a 5 km buffer around the roads.</li>
 <li>From the buffer created using Nature reserves, exclude areas that overlap with the roads and croplands buffers (<code>st_difference</code>).</li>
 <li>From the remaining area, find which regions intersect with abandoned agricultural fields (<code>lc_string==&quot;Abandoned field&quot;</code>). This will be the optimal area for afforestation.</li>
-<li>Plot the optimal region. Calculate the area of your polygon(s), and add it as the title of your plot, or as text inside the plot.</li>
+<li>Plot the optimal region. Calculate the area of your optimal region polygon(s), and add it as the title of your plot, or as text inside the plot.</li>
+
 </ul>
 <h2 id="more-details">More details</h2>
 <ul>
