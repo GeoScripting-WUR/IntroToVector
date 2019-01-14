@@ -1677,7 +1677,8 @@ plot(circles_intersect, col="red", add = TRUE)</code></pre>
 <li>Create a 5 km buffer around the roads.</li>
 <li>From the buffer created using Nature reserves, exclude areas that overlap with the roads and croplands buffers (<code>st_difference</code>).</li>
 <li>From the remaining area, find which regions intersect with abandoned agricultural fields (<code>lc_string==&quot;Abandoned field&quot;</code>). This will be the optimal area for afforestation.</li>
-<li>Plot the optimal area. Calculate the area of your optimal area polygon(s), and add it as the title of your plot, or as text inside the plot.</li>
+<li>Plot the optimal region. Calculate the area of your optimal region polygon(s), and add it as the title of your plot, or as text inside the plot.</li>
+
 </ul>
 <h2 id="more-details">More details</h2>
 <ul>
@@ -1697,7 +1698,7 @@ plot(circles_intersect, col="red", add = TRUE)</code></pre>
 <p>Task2: From the Nature reserves buffer, remove regions where the afforestation should not take place. Using the remaining polygon(s), find which regions intersect with the &quot;Abandoned field&quot; land cover type.</p>
 <p>Task3: Plot the optimal region for afforestation. Calculate its area and add it to the plot title or as text inside the plot.</p>
 <h2 id="bonus">Bonus</h2>
-<p>Plot the optimal area inside the map of Mato Grosso, making it possible to tell in which region of the state this area is located.</p>
+<p>Plot the polygon with the optimal region on top of the map of Mato Grosso, making it possible to tell in which region of the state this area is located.</p>
 <div class="row">
 <div class="alert alert-info">
 <p>
