@@ -41,7 +41,7 @@ In today's lecture, we will explore the basics of handling spatial vector data i
 
 In this tutorial we will use the *sf* package. It is a  spatial vector data package, that builds on top of *sp*, *rgdal* and *rgeos* packages.
 
-The *sf* package focuses solely on vector data. It provides a standardized encoding of vector data and uses GDAL to read and write data, GEOS for geometrical operations and Proj.4 for projection conversions and datum transformations.
+The *sf* package focuses solely on vector data. It provides a standardized encoding of vector data and uses GDAL to read and write data, GEOS for geometrical operations and Proj for projection conversions and datum transformations.
 
 The *rgdal* package includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as GML, GeoJSON, ESRI Shapefiles and KML. The OGR library is part of the widely used **Geospatial Data Abstraction Library** (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data.
 The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow access from a variety of other languages including R and Python but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunately, the *sf* package, providing GDAL bindings in R, is also well documented with lots of examples. The same is valid for the Python libaries.
@@ -311,9 +311,9 @@ Hooray, it worked! Now our friends have the data they wanted. Try to understand 
 Transformations between coordinate systems are crucial to many GIS applications.
 The **Keyhole Markup Language (KML)** used by Google Earth uses latitude and longitude in a polar WGS84 coordinate system (i.e. geographic coordinates). However, in some of the examples below we will use metric distances (i.e. projected coordinates).There are two types of coordinate systems that you need to recognise: **projected coordinate systems** and **geographic coordinate systems**.
 
-One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. Projected coordinates are coordinates that refer to a point on a two-dimensional map that *represents* the surface of the Earth (i.e. **projected coordinate system**). Latitude and longitude values are an example of an **unprojected coordinate system**. These are coordinates that directly refer to a point on the Earth's surface. One way to deal with this is by transforming the data to a planar coordinate system. In R this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** ([http://trac.osgeo.org/proj/](http://trac.osgeo.org/proj/)), which are available in *sf*.  
+One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. Projected coordinates are coordinates that refer to a point on a two-dimensional map that *represents* the surface of the Earth (i.e. **projected coordinate system**). Latitude and longitude values are an example of an **unprojected coordinate system**. These are coordinates that directly refer to a point on the Earth's surface. One way to deal with this is by transforming the data to a planar coordinate system. In R this can be achieved via bindings to the **PROJ - Cartographic Projections Library** ([https://proj.org/](https://proj.org/)), which are available in *sf*.  
 
-Central to spatial data in the *sf* package is that they have a coordinate reference system, which is coded as a numeric epsg code and a character string describing the projection by the *PROJ.4* projection library. Operations on different spatial data sets need to have compatible coordinate reference systems (i.e., identical). An interface to the *PROJ.4* library is available through the *sf* package.
+Central to spatial data in the *sf* package is that they have a coordinate reference system, which is coded as a numeric epsg code and a character string describing the projection by the *PROJ* projection library. Operations on different spatial data sets need to have compatible coordinate reference systems (i.e., identical). An interface to the *PROJ* library is available through the *sf* package.
 
 We will transform our spatial data to the Dutch grid (Rijksdriehoekstelsel), often referred to as RD or RD_New.
 Please note that:
@@ -321,7 +321,7 @@ Please note that:
 - Some widely spread definitions of the Dutch grid (**EPSG: 28992**) are incomplete
 (see e.g. [http://www.spatialreference.org](http://www.spatialreference.org) and search for the EPSG number);
 - The transformation used below is approximate. Details can be found at [http://nl.wikipedia.org/wiki/Rijksdriehoekscoordinaten](http://nl.wikipedia.org/wiki/Rijksdriehoekscoordinaten).
-- The PROJ.4 details can be found here: [http://www.spatialreference.org/ref/epsg/28992/proj4/](http://www.spatialreference.org/ref/epsg/28992/proj4/)
+- The PROJ details can be found here: [http://www.spatialreference.org/ref/epsg/28992/proj4/](http://www.spatialreference.org/ref/epsg/28992/proj4/)
 
 ```{r}
 ## Define CRS object for RD projection
