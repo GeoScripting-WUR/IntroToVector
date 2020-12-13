@@ -30,7 +30,7 @@ In today's lecture, we will explore the basics of handling spatial vector data i
   - create point, line and polygon objects from scratch;
   - explore the structure of `sf` classes for spatial vector data;
   - plot spatial vector data;
-  - transform between datums and map projections; 
+  - transform between datums and map projections;
   - write and read spatial vector formats (e.g. KML, GML, GeoJSON, shapefile);
   - apply basic operations on vector data, such as buffering, intersection and area calculation;
 
@@ -43,20 +43,18 @@ In this tutorial we will use the *sf* package. It is a  spatial vector data pack
 
 The *sf* package focuses solely on vector data. It provides a standardized encoding of vector data and uses GDAL to read and write data, GEOS for geometrical operations and Proj.4 for projection conversions and datum transformations.
 
-Another package that commonly is used, is the *sp* package. It provides classes for importing, manipulating and exporting spatial data in R, and methods for doing so. It can handle both vectors and rasters. It is often the foundation for other spatial packages, such as *raster*.
-
 The *rgdal* package includes bindings to parts of the **OGR Simple Feature Library** which provides access to a variety of vector file formats such as GML, GeoJSON, ESRI Shapefiles and KML. The OGR library is part of the widely used **Geospatial Data Abstraction Library** (GDAL). The GDAL library is the most useful freely-available library for reading and writing geospatial data.
-The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow access from a variety of other languages including *R* and *Python* but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunately, the *sf* package, providing GDAL bindings in R, is also well documented with lots of examples. The same is valid for the Python libaries.
+The GDAL library is well-documented (http://gdal.org/), but with a catch for R and Python programmers. The GDAL (and associated OGR) library and command line tools are all written in C and C++. Bindings are available that allow access from a variety of other languages including R and Python but the documentation is all written for the C++ version of the libraries. This can make reading the documentation rather challenging. Fortunately, the *sf* package, providing GDAL bindings in R, is also well documented with lots of examples. The same is valid for the Python libaries.
 
 Similarly, *rgeos* is an interface to the powerful **Geometry Engine Open Source (GEOS)** library for all kinds of operations on geometries (buffering, overlaying, area calculations, etc.).  
 
-Thus, functionality that you commonly find in expensive GIS software is also available within R, using free but very powerful software libaries. 
+Thus, functionality that you commonly find in expensive GIS software is also available within R, using free but very powerful software libaries.
 
 The possiblities are huge. In this course we can only scratch the surface with some essentials, which hopefully invite you to experiment further and use them in your research. Details can be found in the book *Applied Spatial Data Analysis with R* and several vignettes authored by Roger Bivand, Edzer Pebesma and Virgilio Gomez-Rubio.
 
 ## Creating and manipulating geometries
 
-The package *sf* has geometry types, such as `point` (for one point), `linestring` (for one line) and `polygon` (for one polygon). For sets of spatial classes it has the `multipoint` (multiple points), `multilinestring`, `multipolygon` and `geometrycollection`. The geometry collection data class allows to have mixed geometries in one object. The package *sf* has even more special geometry types [(check here)](https://cran.r-project.org/web/packages/sf/vignettes/sf1.html). The most common geometry types for spatial vector data are shown below:
+The package *sf* has geometry types, such as `point` (for one point), `linestring` (for one line) and `polygon` (for one polygon). For sets of spatial classes it has the `multipoint` (multiple points), `multilinestring`, `multipolygon` and `geometrycollection`. The `geometrycollection` data class allows to have mixed geometries in one object. The package *sf* has even more special geometry types [(check here)](https://cran.r-project.org/web/packages/sf/vignettes/sf1.html). The most common geometry types for spatial vector data are shown below:
 
 | Geometry      | type                      | description               |
 |-------------  |-----------------          |-------------              |
@@ -70,7 +68,7 @@ The package *sf* has geometry types, such as `point` (for one point), `linestrin
 
 Table:  Overview of *sf* package geometry types.
 
-Simple feature objects are stored in data classes. 
+Simple feature objects are stored in data classes.
 Three data classes are used in *sf* to represent features:
 
   - simple feature geometry (sfg): the feature geometry of an individual simple feature;
@@ -100,7 +98,7 @@ point1_sfg <- st_point(c(5.664190, 51.993843))  # enter your own lat/long
 point2_sfg <- st_point(c(5.673310, 51.982752))   # enter your own lat/long
 
 ## Combine point features into simple feature collection with CRS: mypoints_sfc
-mypoints_sfc <- st_sfc(point1_sfg, point2_sfg, crs = 4326) 
+mypoints_sfc <- st_sfc(point1_sfg, point2_sfg, crs = 4326)
 mypoints_sfc_wgs <- st_sfc(point1_sfg, point2_sfg, crs = "+proj=longlat +datum=WGS84 +no_defs")
 # These two functions do the same. Which one do you like more?
 ```
@@ -122,7 +120,7 @@ class(mypoints_sfc)
 ```{r, eval=TRUE}
 ## Create and display some attribute data and store in a data frame
 mydata <- data.frame(cbind(
-    id = c(1,2), 
+    id = c(1,2),
     name = c("my first point","my second point")))
 mydata
 
@@ -192,14 +190,14 @@ plot(myline_sf[1], main = myline_sf$name, col = "red", lwd = 3, lty = 5, graticu
 
 ### Writing and reading spatial vector data
 
-What now follows is a brief intermezzo before we continue with the classes for polygons. 
+What now follows is a brief intermezzo before we continue with the classes for polygons.
 We will use the OGR functionality of GDAL available through the package *sf*.
 
 ```{r eval = FALSE}
 ## Create subdirectory data within current working directory
 #getwd() #if needed
-#setwd() 
-dir.create("data", showWarnings = FALSE) 
+#setwd()
+dir.create("data", showWarnings = FALSE)
 
 ## Write to KML
 st_write(obj = mypoints_sf, dsn = "./data/mypoints.kml")
@@ -207,11 +205,11 @@ st_write(obj = myline_sf, dsn = "./data/myline.kml")
 
 ```
 The function `st_write` requires entries for the arguments `obj` (object of class sf) and `dsn` (data source name). The function detects what driver it needs based on the file extension of the dsn. Please study details in the help file: `?st_write`.
-Similarly the function `st_read` allows reading OGR compatible data into a suitable simple feature object. 
+Similarly the function `st_read` allows reading OGR compatible data into a suitable simple feature object.
 
-Check (in Google Maps) whether the attribute data were written correctly to the KML output (use [My Maps](https://www.google.com/maps/about/mymaps/) from Google). You need to be logged in on your google account, go to [My Maps](https://www.google.com/maps/about/mymaps/), click `get started`, click the `+` button to create a new digital map. On the untitled layer click `import`, import the mypoints.kml, add a new layer and import myline.kml. Cool! You just created a webmap with your point and line features. 
+Check (in Google Maps) whether the attribute data were written correctly to the KML output (use [My Maps](https://www.google.com/maps/about/mymaps/) from Google). You need to be logged in on your Google account, go to [My Maps](https://www.google.com/maps/about/mymaps/), click `get started`, click the `+` button to create a new digital map. On the untitled layer click `import`, import the `mypoints.kml`, add a new layer and import `myline.kml`. Cool! You just created a webmap with your point and line features.
 
-Now let us see if we can create a line in the webmap and import it to R. Digitize a route (e.g. a walking route) between two points of interest in Wageningen: click on the `draw a line` symbol (between the place marker and the direction symbol), click `Add walking route`, draw your route in Wageningen and name the new layer `myroute`. 
+Now let us see if we can create a line in the webmap and import it to R. Digitize a route (e.g. a walking route) between two points of interest in Wageningen: click on the `draw a line` symbol (between the place marker and the direction symbol), click `Add walking route`, draw your route in Wageningen and name the new layer `myroute`.
 
 ```{r echo=FALSE, out.width='100%'}
 knitr::include_graphics('./figs/Route_map.png')
@@ -221,17 +219,17 @@ Click on the main menu in the left panel (top ... symbol), click `export to KML`
 
 ```{r}
 ## Read the KML as a simple feature
-myroute <- st_read(dsn = "./data/myroute.kml") 
+myroute <- st_read(dsn = "./data/myroute.kml")
 ```
 
 ```{r}
-myroute #What is the geometry type of this object? 
+myroute #What is the geometry type of this object?
 names(myroute)
 myroute = myroute[,"Name"] # Select name column only
 plot(myroute) # What geometry types do you see?
 ```
 
-Now we have the data, but some of our friends want this exact data too. One friend of ours is a software engineer and he wants a GeoJSON. Another friend is a GIS-analyst in QGIS and as a backup he wants the file in two formats: Geographic Markup Language (GML) and a shapefile. These fileformats (KML, GeoJSON, GML and shapefile) are commonly used in spatial analysis. Let's try to give them the files in those formats!
+Now we have the data, but some of our friends want these exact data too. One friend of ours is a software engineer and he wants a GeoJSON. Another friend is a GIS-analyst in QGIS and as a backup he wants the file in two formats: Geographic Markup Language (GML) and a Shapefile. These fileformats (KML, GeoJSON, GML and Shapefile) are commonly used in spatial analysis. Let's try to give them the files in those formats!
 
 
 
@@ -247,14 +245,14 @@ Okay success! Let us continue with the GML.
 try(st_write(myroute, dsn = "./data/route.gml"))
 ```
 
-Works! Now transform to a shapefile.
+Works! Now transform to a Shapefile.
 
 ```{r, message=FALSE, warning=TRUE, eval = FALSE}
-## Again export to a shapefile. What happens now?
+## Again export to a Shapefile. What happens now?
 try(st_write(myroute, dsn = "./data/route.shp"))
 ```
 
-Writing the myroute object to a shapefile worked only for the linestring, but did not work for the points. Shapefiles do not handle multiple geometry types well. We can solve this! Have a look at `?st_is`. 
+Writing the myroute object to a Shapefile worked only for the linestring, but did not work for the points. Shapefiles do not handle multiple geometry types well. We can solve this! Have a look at `?st_is`.
 
 ```{r, eval=TRUE}
 ## Select linestring route
@@ -265,12 +263,12 @@ myroute_points <- myroute[st_is(myroute, type = "POINT"),]
 ```
 
 ```{r, eval=FALSE, message=FALSE, warning=TRUE}
-## Let us try to write the simple features to a shapefile
+## Let us try to write the simple features to a Shapefile
 try(st_write(myroute_line, dsn = "./data/route_line.shp"))
 try(st_write(myroute_points, dsn = "./data/route_points.shp"))
 ```
 
-We run into another issue; shapefiles do not support 3D line strings and points. We have fixed the geometry type, but now need to work on the dimensions of the data. Let us look into dimensions. 
+We run into another issue; Shapefiles do not support 3D line strings and points. We have fixed the geometry type, but now need to work on the dimensions of the data. Let us look into dimensions.
 
 ## Dimensions
 
@@ -300,27 +298,27 @@ myroute_line_xy
 ```
 
 ```{r, eval=FALSE, message = FALSE}
-## Try to export the simple feature to a shapefile 
+## Try to export the simple feature to a Shapefile
 try(st_write(myroute_points_xy, dsn = "./data/route_points.shp"))
-#Overwrite your previous shapefile by adding delete_layer = TRUE
-try((st_write(myroute_line_xy, dsn = "./data/route.shp", delete_layer = TRUE))) 
+#Overwrite your previous Shapefile by adding delete_layer = TRUE
+try((st_write(myroute_line_xy, dsn = "./data/route.shp", delete_layer = TRUE)))
 ```
 
 Hooray, it worked! Now our friends have the data they wanted. Try to understand the above code and results. Feel free to display the data in QGIS.
 
 ### Transformation of coordinate system
 
-Transformations between coordinate systems are crucial to many GIS applications. 
+Transformations between coordinate systems are crucial to many GIS applications.
 The **Keyhole Markup Language (KML)** used by Google Earth uses latitude and longitude in a polar WGS84 coordinate system (i.e. geographic coordinates). However, in some of the examples below we will use metric distances (i.e. projected coordinates).There are two types of coordinate systems that you need to recognise: **projected coordinate systems** and **geographic coordinate systems**.
 
-One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. Projected coordinates are coordinates that refer to a point on a two-dimensional map that *represents* the surface of the Earth (i.e. **projected coordinate system**). Latitude and Longitude values are an example of an **unprojected coordinate system**. These are coordinates that directly refer to a point on the Earth's surface. One way to deal with this is by transforming the data to a planar coordinate system. In `R` this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** ([http://trac.osgeo.org/proj/](http://trac.osgeo.org/proj/)), which are available in *sf*.  
+One of the challenges of working with geo-spatial data is that geodetic locations (points on the Earth surface) are mapped into a two-dimensional cartesian plane using a cartographic projection. Projected coordinates are coordinates that refer to a point on a two-dimensional map that *represents* the surface of the Earth (i.e. **projected coordinate system**). Latitude and longitude values are an example of an **unprojected coordinate system**. These are coordinates that directly refer to a point on the Earth's surface. One way to deal with this is by transforming the data to a planar coordinate system. In R this can be achieved via bindings to the **PROJ.4 - Cartographic Projections Library** ([http://trac.osgeo.org/proj/](http://trac.osgeo.org/proj/)), which are available in *sf*.  
 
 Central to spatial data in the *sf* package is that they have a coordinate reference system, which is coded as a numeric epsg code and a character string describing the projection by the *PROJ.4* projection library. Operations on different spatial data sets need to have compatible coordinate reference systems (i.e., identical). An interface to the *PROJ.4* library is available through the *sf* package.
 
 We will transform our spatial data to the Dutch grid (Rijksdriehoekstelsel), often referred to as RD or RD_New.
-Please note that: 
+Please note that:
 
-- Some widely spread definitions of the Dutch grid (**EPSG: 28992**) are incomplete 
+- Some widely spread definitions of the Dutch grid (**EPSG: 28992**) are incomplete
 (see e.g. [http://www.spatialreference.org](http://www.spatialreference.org) and search for the EPSG number);
 - The transformation used below is approximate. Details can be found at [http://nl.wikipedia.org/wiki/Rijksdriehoekscoordinaten](http://nl.wikipedia.org/wiki/Rijksdriehoekscoordinaten).
 - The PROJ.4 details can be found here: [http://www.spatialreference.org/ref/epsg/28992/proj4/](http://www.spatialreference.org/ref/epsg/28992/proj4/)
@@ -368,12 +366,12 @@ library(geosphere)
 ## Euclidean distance: WGS84, RD_New
 # Get data from matrix position [1, 2]
 (dist_eucl_wgs = st_distance(myroute_points_xy)[1,2])
-(dist_eucl_rd = st_distance(myroute_points_rd)[1,2]) 
+(dist_eucl_rd = st_distance(myroute_points_rd)[1,2])
 ```
 Okay as expected the network distance is bigger than a straight line between the two points, but a question remains:
 
 ```{block, type="alert alert-success"}
-> **Question 4:** Why does the distance slightly differ between objects with CRS WGS84 and RD_New? 
+> **Question 4:** Why does the distance slightly differ between objects with CRS WGS84 and RD_New?
 ```
 
 Now we know the network and euclidean distance between the two points. As you might have noticed the `st_length()` and `st_distance()` functions gave a unit behind the number. It was a meter in our case, but maybe we want to know how many feet or inch the distance was. The *sf* package allows unit conversions by bindings to the *units* package.
@@ -413,7 +411,7 @@ dist_points_rd <- st_distance(mypoints_sfc_rd)[1,2]
 ## Define a series of angles going from 0 to 2pi
 ang <- pi*0:200/100
 # distance needs to be converted from units m class to double class
-circle1x <- pnt1_rd[1]+ cos(ang) * as.double(dist_points_rd) 
+circle1x <- pnt1_rd[1]+ cos(ang) * as.double(dist_points_rd)
 circle1y <- pnt1_rd[2] + sin(ang) * as.double(dist_points_rd)
 circle2x <- pnt2_rd[1]+ cos(ang) * as.double(dist_points_rd)
 circle2y <- pnt2_rd[2] + sin(ang) * as.double(dist_points_rd)
@@ -458,9 +456,9 @@ plot(circles_sf)
 
 #### Polygon operations with *sf* (buffer, intersect, difference)
 
-Just now we calculated the points of the circle to obtain a perfect circle and then made it into a polygon, but we can also create a circular polygon by using the function `st_buffer()`. 
+Just now we calculated the points of the circle to obtain a perfect circle and then made it into a polygon, but we can also create a circular polygon by using the function `st_buffer()`.
 
-The *sf* package can do more spatial operations by spatially selecting certain features and changing the geometry. Examples of spatial selections are `st_intersects`, `st_contains`, `st_within`, `st_covers` etc. 
+The *sf* package can do more spatial operations by spatially selecting certain features and changing the geometry. Examples of spatial selections are `st_intersects`, `st_contains`, `st_within`, `st_covers` etc.
 
 The package can change geometries of features with `st_difference` (clip), `st_intersection` (intersect), `st_union`, `st_sym_difference`, `st_centroid`, `st_segmentize`, `st_convex_hull` and `st_buffer`. More methods can be found with the command: `methods(class = "sf")`.
 
@@ -490,10 +488,10 @@ plot(circle_quadsegs, add = TRUE, lty = 3, lwd = 2, col = "grey")
 
 ```{r, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
 ## Check areal difference
-st_area(circles_diff) 
+st_area(circles_diff)
 
 # What is the difference in hectares?
-units::set_units(st_area(circles_diff),hectare) 
+units::set_units(st_area(circles_diff),hectare)
 ```
 
 ```{r, eval = TRUE, fig.width=4, fig.height=4, fig.align='center'}
@@ -515,11 +513,11 @@ plot(circles_intersect, col="red", add = TRUE)
 
 We learned about:
 
-- The geometry types of the **sf** package: points, linestrings, polygons etc. 
-- The data classes of the **sf** package: sfg, sfc and sf
-- How to read/write data and change vector data format (KML, GML, shapefile and GeoJSON)
+- The geometry types of the *sf* package: points, linestrings, polygons etc.
+- The data classes of the *sf* package: `sfg`, `sfc` and `sf`
+- How to read/write data and change vector data format (KML, GML, Shapefile and GeoJSON)
 - Visualize spatial vector data in R and in Google Maps
-- How to perform simple spatial operations on Geometries in R using the **sf** package
+- How to perform simple spatial operations on Geometries in R using the *sf* package
 
 <!--
 # Exercise  6: Find the optimal area for an afforestation programme
@@ -541,7 +539,7 @@ In the state of Mato Grosso, Brazil, agricultural expansion and illegal logging 
   * Data can be found [here](https://www.dropbox.com/sh/4n2ifcpg0wy766e/AADYNljpqwZWngzucgsoSYt1a?dl=0).
   * "MS_land_cover.shp" is a land cover map of the state of Mato Grosso.
   * "MS_roads.shp" is a shapefile with the main roads of Mato Grosso.
-  
+
 ## Hints
 
   * After creating each buffer, use `st_union` to merge overlaping polygons in your buffer.
