@@ -179,7 +179,7 @@ myline_sf
 ```
 
 ```{r, fig.height=6, fig.width=12}
-plot(myline_sf[1], main = myline_sf$name, col = "red", lwd = 3, lty = 5, graticule = TRUE, xlab = "latitude", ylab = "longitude", axes = TRUE)
+plot(myline_sf[1], main = myline_sf$name, col = "red", lwd = 3, lty = 5, graticule = TRUE, axes = TRUE)
 ```
 
 *Try to understand the above code and its results by studying help: `?plot_sf`*
