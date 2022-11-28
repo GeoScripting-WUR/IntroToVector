@@ -73,7 +73,7 @@ The example below shows how you can create spatial point objects from these coor
 
 ```{r}
 # Check for the sf package and install if missing
-if(!"sf" %in% rownames(installed.packages())){install.packages("sf")}
+if(!"sf" %in% installed.packages()){install.packages("sf")}
 
 # Load the sf package
 library(sf)
@@ -175,8 +175,8 @@ We will use the OGR functionality of GDAL available through the package *sf*.
 dir.create("data", showWarnings = FALSE)
 
 # Write to KML
-st_write(obj = mypoints_sf, dsn = "./data/mypoints.kml")
-st_write(obj = myline_sf, dsn = "./data/myline.kml")
+st_write(obj = mypoints_sf, dsn = "data/mypoints.kml")
+st_write(obj = myline_sf, dsn = "data/myline.kml")
 ```
 The function `st_write` requires entries for the arguments `obj` (object of class sf) and `dsn` (data source name). The function detects what driver it needs based on the file extension of the dsn. Please study details in the help file: `?st_write`.
 Similarly the function `st_read` allows reading OGR compatible data into a suitable simple feature object.
@@ -186,14 +186,14 @@ Check (in Google Maps) whether the attribute data were written correctly to the 
 Now let us see if we can create a line in the webmap and import it to R. Digitize a route (e.g. a walking route) between two points of interest in Wageningen: click on the `draw a line` symbol (between the place marker and the direction symbol), click `Add walking route`, draw your route in Wageningen and name the new layer `myroute`.
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('./figs/Route_map.png')
+knitr::include_graphics('figs/Route_map.png')
 ```
 
-Click on the main menu in the left panel (top ... symbol), click `export to KML`, check box `export to .KML file`, select your route layer and download the kml (check [here](https://support.google.com/mymaps/answer/3109452?hl=en) how to export). Save the KML in the data folder within the working directory under the name `myroute.kml`. We will read this file into a simple features object.
+Click on the main menu in the left panel (top ... symbol), click `export to KML`, check box `export to .KML file`, select your route layer and download the kml (check [here](https://support.google.com/mymaps/answer/3109452?hl=en) how to export). Save the KML in the data directory under the name `myroute.kml`. We will read this file into a simple features object.
 
 ```{r}
 ## Read the KML as a simple feature
-myroute <- st_read(dsn = "./data/myroute.kml")
+myroute <- st_read(dsn = "data/myroute.kml")
 ```
 
 ```{r}
@@ -212,21 +212,21 @@ Now we have the data, but some of our friends want these exact data too. One fri
 
 ```{r, eval=FALSE}
 # Try to export the simple feature to a GeoJSON. What happens?
-try(st_write(myroute, dsn = "./data/route.geojson"))
+try(st_write(myroute, dsn = "data/route.geojson"))
 ```
 
 Okay success! Let us continue with the GML.
 
 ```{r, eval=FALSE}
 # Try to export the simple feature to a GML. What happens?
-try(st_write(myroute, dsn = "./data/route.gml"))
+try(st_write(myroute, dsn = "data/route.gml"))
 ```
 
 Works! Now transform to a Shapefile.
 
 ```{r, message=FALSE, warning=TRUE, eval = FALSE}
 ## Again export to a Shapefile. What happens now?
-try(st_write(myroute, dsn = "./data/route.shp"))
+try(st_write(myroute, dsn = "data/route.shp"))
 ```
 
 Writing the myroute object to a Shapefile worked only for the linestring, but did not work for the points. Shapefiles do not handle multiple geometry types well. We can solve this! Have a look at `?st_is`.
@@ -241,8 +241,8 @@ myroute_points <- myroute[st_is(myroute, type = "POINT"),]
 
 ```{r, eval=FALSE, message=FALSE, warning=TRUE}
 # Let us try to write the simple features to a Shapefile
-try(st_write(myroute_line, dsn = "./data/route_line.shp"))
-try(st_write(myroute_points, dsn = "./data/route_points.shp"))
+try(st_write(myroute_line, dsn = "data/route_line.shp"))
+try(st_write(myroute_points, dsn = "data/route_points.shp"))
 ```
 
 We run into another issue; Shapefiles do not support 3D line strings and points. We have fixed the geometry type, but now need to work on the dimensions of the data. Let us look into dimensions.
@@ -275,10 +275,10 @@ myroute_line_xy
 
 ```{r, eval=FALSE, message = FALSE}
 # Try to export the simple feature to a Shapefile
-try(st_write(myroute_points_xy, dsn = "./data/route_points.shp"))
+try(st_write(myroute_points_xy, dsn = "data/route_points.shp"))
 
 # Overwrite your previous Shapefile by adding delete_layer = TRUE
-try((st_write(myroute_line_xy, dsn = "./data/route.shp", delete_layer = TRUE)))
+try((st_write(myroute_line_xy, dsn = "data/route.shp", delete_layer = TRUE)))
 ```
 
 Hooray, it worked! Now our friends have the data they wanted. Try to understand the above code and results. Feel free to display the data in QGIS.
@@ -330,7 +330,7 @@ Now that the geometries are projected to a planar coordinate system, the length 
 
 ```{r}
 # Check for the geosphere package and install if missing
-if(!"geosphere" %in% rownames(installed.packages())){install.packages("geosphere")}
+if(!"geosphere" %in% installed.packages()){install.packages("geosphere")}
 
 # Load package
 library(geosphere)

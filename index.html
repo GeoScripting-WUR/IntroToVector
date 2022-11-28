@@ -1164,7 +1164,7 @@ used.</p>
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r"># Check for the sf package and install if missing
-if(!"sf" %in% rownames(installed.packages())){install.packages("sf")}
+if(!"sf" %in% installed.packages()){install.packages("sf")}
 
 # Load the sf package
 library(sf)</code></pre>
@@ -1317,8 +1317,8 @@ available through the package <em>sf</em>.</p>
 dir.create("data", showWarnings = FALSE)
 
 # Write to KML
-st_write(obj = mypoints_sf, dsn = "./data/mypoints.kml")
-st_write(obj = myline_sf, dsn = "./data/myline.kml")</code></pre>
+st_write(obj = mypoints_sf, dsn = "data/mypoints.kml")
+st_write(obj = myline_sf, dsn = "data/myline.kml")</code></pre>
 </div>
 <p>The function <code>st_write</code> requires entries for the arguments
 <code>obj</code> (object of class sf) and <code>dsn</code> (data source
@@ -1354,15 +1354,15 @@ the new layer <code>myroute</code>.</p>
 <code>export to KML</code>, check box <code>export to .KML file</code>,
 select your route layer and download the kml (check <a
 href="https://support.google.com/mymaps/answer/3109452?hl=en">here</a>
-how to export). Save the KML in the data folder within the working
-directory under the name <code>myroute.kml</code>. We will read this
-file into a simple features object.</p>
+how to export). Save the KML in the data directory under the name
+<code>myroute.kml</code>. We will read this file into a simple features
+object.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r">## Read the KML as a simple feature
-myroute <- st_read(dsn = "./data/myroute.kml")</code></pre>
+myroute <- st_read(dsn = "data/myroute.kml")</code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
 </button>
@@ -1436,7 +1436,7 @@ spatial analysis. Let’s try to give them the files in those formats!</p>
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r"># Try to export the simple feature to a GeoJSON. What happens?
-try(st_write(myroute, dsn = "./data/route.geojson"))</code></pre>
+try(st_write(myroute, dsn = "data/route.geojson"))</code></pre>
 </div>
 <p>Okay success! Let us continue with the GML.</p>
 <div class="row">
@@ -1444,7 +1444,7 @@ try(st_write(myroute, dsn = "./data/route.geojson"))</code></pre>
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r"># Try to export the simple feature to a GML. What happens?
-try(st_write(myroute, dsn = "./data/route.gml"))</code></pre>
+try(st_write(myroute, dsn = "data/route.gml"))</code></pre>
 </div>
 <p>Works! Now transform to a Shapefile.</p>
 <div class="row">
@@ -1452,7 +1452,7 @@ try(st_write(myroute, dsn = "./data/route.gml"))</code></pre>
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r">## Again export to a Shapefile. What happens now?
-try(st_write(myroute, dsn = "./data/route.shp"))</code></pre>
+try(st_write(myroute, dsn = "data/route.shp"))</code></pre>
 </div>
 <p>Writing the myroute object to a Shapefile worked only for the
 linestring, but did not work for the points. Shapefiles do not handle
@@ -1473,8 +1473,8 @@ myroute_points <- myroute[st_is(myroute, type = "POINT"),]</code></pre>
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r"># Let us try to write the simple features to a Shapefile
-try(st_write(myroute_line, dsn = "./data/route_line.shp"))
-try(st_write(myroute_points, dsn = "./data/route_points.shp"))</code></pre>
+try(st_write(myroute_line, dsn = "data/route_line.shp"))
+try(st_write(myroute_points, dsn = "data/route_points.shp"))</code></pre>
 </div>
 <p>We run into another issue; Shapefiles do not support 3D line strings
 and points. We have fixed the geometry type, but now need to work on the
@@ -1545,10 +1545,10 @@ myroute_points_xy</code></pre>
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r"># Try to export the simple feature to a Shapefile
-try(st_write(myroute_points_xy, dsn = "./data/route_points.shp"))
+try(st_write(myroute_points_xy, dsn = "data/route_points.shp"))
 
 # Overwrite your previous Shapefile by adding delete_layer = TRUE
-try((st_write(myroute_line_xy, dsn = "./data/route.shp", delete_layer = TRUE)))</code></pre>
+try((st_write(myroute_line_xy, dsn = "data/route.shp", delete_layer = TRUE)))</code></pre>
 </div>
 <p>Hooray, it worked! Now our friends have the data they wanted. Try to
 understand the above code and results. Feel free to display the data in
@@ -1653,7 +1653,7 @@ the package geosphere.</p>
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r"># Check for the geosphere package and install if missing
-if(!"geosphere" %in% rownames(installed.packages())){install.packages("geosphere")}
+if(!"geosphere" %in% installed.packages()){install.packages("geosphere")}
 
 # Load package
 library(geosphere)
